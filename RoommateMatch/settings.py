@@ -37,6 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'locations',
+    'accounts'
 ]
 
 MIDDLEWARE = [
@@ -76,9 +78,9 @@ WSGI_APPLICATION = 'RoommateMatch.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'roommateatcchdb',        # ← اسم دیتابیس درست
-        'USER': 'roommateappuser',        # ← کاربر درست
-        'PASSWORD': '123456',  # ← پسوردی که موقع ساخت دیتابیس وارد کردید
+        'NAME': 'roommateatcchdb',    # ← اسم درست
+        'USER': 'roommateappuser',    # ← کاربر درست
+        'PASSWORD': '123456',         # ← پسورد درست
         'HOST': 'localhost',
         'PORT': '5432',
     }

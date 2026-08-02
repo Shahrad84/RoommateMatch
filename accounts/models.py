@@ -1,13 +1,8 @@
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
+from locations.models import City 
 
-
-class City(models.Model):
-    city_id = models.AutoField(primary_key=True)
-    name = models.CharField(max_length=20)
-    country = models.CharField(max_length=20)
-
-class User(models.Model):
+class account(models.Model):
 
     GENDER_CHOICES = (
         ("male", "male"),
@@ -86,7 +81,7 @@ class User(models.Model):
 
     # food
     cooking = models.CharField(max_length=30, choices=TIME_FREQUENCY_CHOICES)
-    eating_at_home = models.CharField(max_lenght = 30, choices=TIME_FREQUENCY_CHOICES)
+    eating_at_home = models.CharField(max_length=30, choices=TIME_FREQUENCY_CHOICES)
 
 
     # guests
