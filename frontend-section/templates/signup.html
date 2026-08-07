@@ -1,0 +1,162 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sign Up · Roommate Match</title>
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+
+    <!-- Google Font: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet" />
+
+    <!-- Main CSS -->
+    <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+
+    <!-- Signup CSS -->
+    <link rel="stylesheet" href="{% static 'css/signup.css' %}" />
+</head>
+<body>
+
+    <!-- ====== HEADER ====== -->
+    <header class="header" id="header">
+        <div class="container header__container">
+            <a href="/" class="logo">
+                <i class="fas fa-home logo__icon"></i>
+                Roommate Match
+            </a>
+            <div class="header__actions">
+                <a href="/accounts/login/" class="btn btn--outline btn--sm">Log In</a>
+                <a href="/accounts/signup/" class="btn btn--primary btn--sm active">Sign Up</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- ====== SIGNUP SECTION ====== -->
+    <section class="signup">
+        <div class="container signup__container">
+            <div class="signup__card">
+                <div class="signup__header">
+                    <h1 class="signup__title">Create Your Account</h1>
+                    <p class="signup__subtitle">
+                        Join Roommate Match and find your perfect roommate today!
+                    </p>
+                </div>
+
+                <!-- ====== FORM ====== -->
+                <form id="signupForm" class="signup__form">
+                    
+                    <!-- ====== STEP 1: Account Info ====== -->
+                    <div class="signup__step signup__step--active" data-step="1">
+                        <h3 class="signup__step-title">Account Details</h3>
+
+                        <div class="form-group">
+                            <label for="username">Username</label>
+                            <input type="text" id="username" name="username" placeholder="john_doe" required />
+                            <small class="form-hint">Choose a unique username</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="email">Email Address</label>
+                            <input type="email" id="email" name="email" placeholder="john@example.com" required />
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="password">Password</label>
+                                <input type="password" id="password" name="password" placeholder="••••••••" required />
+                                <small class="form-hint">Minimum 6 characters</small>
+                            </div>
+                            <div class="form-group">
+                                <label for="confirmPassword">Confirm Password</label>
+                                <input type="password" id="confirmPassword" name="confirmPassword" placeholder="••••••••" required />
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ====== STEP 2: Personal Info ====== -->
+                    <div class="signup__step" data-step="2">
+                        <h3 class="signup__step-title">Personal Information</h3>
+
+                        <div class="form-group">
+                            <label for="fullName">Full Name</label>
+                            <input type="text" id="fullName" name="fullName" placeholder="John Doe" required />
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="age">Age</label>
+                                <input type="number" id="age" name="age" placeholder="25" min="18" max="99" required />
+                            </div>
+                            <div class="form-group">
+                                <label for="gender">Gender</label>
+                                <select id="gender" name="gender" required>
+                                    <option value="">Select...</option>
+                                    <option value="male">Male</option>
+                                    <option value="female">Female</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="city">City</label>
+                            <select id="city" name="city">
+                                <option value="">Select your city</option>
+                                <option value="1">Berlin</option>
+                                <option value="2">Hamburg</option>
+                                <option value="3">Munich</option>
+                                <option value="4">Cologne</option>
+                                <option value="5">Frankfurt</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="bio">Bio</label>
+                            <textarea id="bio" name="bio" rows="3" placeholder="Tell us about yourself..."></textarea>
+                        </div>
+                    </div>
+
+                    <!-- ====== FORM NAVIGATION ====== -->
+                    <div class="signup__navigation">
+                        <button type="button" class="btn btn--outline btn--sm" id="prevStep" disabled>
+                            <i class="fas fa-arrow-left"></i> Back
+                        </button>
+                        <span class="signup__step-indicator">Step <span id="currentStep">1</span> of 2</span>
+                        <button type="button" class="btn btn--primary btn--sm" id="nextStep">
+                            Next <i class="fas fa-arrow-right"></i>
+                        </button>
+                        <button type="submit" class="btn btn--primary btn--sm" id="submitStep" style="display: none;">
+                            Create Account <i class="fas fa-check"></i>
+                        </button>
+                    </div>
+
+                    <!-- ====== MESSAGES ====== -->
+                    <div id="formMessage" class="signup__message" style="display: none;"></div>
+                </form>
+
+                <div class="signup__footer">
+                    <p>
+                        Already have an account?
+                        <a href="/accounts/login/">Log In</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ====== FOOTER ====== -->
+    <footer class="footer footer--simple">
+        <div class="container footer__bottom-container">
+            <span>&copy; 2026 Roommate Match. All rights reserved.</span>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="{% static 'js/main.js' %}"></script>
+    <script src="{% static 'js/signup.js' %}"></script>
+</body>
+</html>

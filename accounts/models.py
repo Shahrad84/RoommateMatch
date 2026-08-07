@@ -1,21 +1,22 @@
 from django.db import models
-from django.core.validators import MinValueValidator, MaxValueValidator
+from django.contrib.auth.models import AbstractUser
 from locations.models import City 
 
-class Account(models.Model):
+
+class Account(AbstractUser):
 
     GENDER_CHOICES = (
         ("male", "male"),
         ("female", "female"),
+        ("other", "other"),
     )
-
-    user_id = models.AutoField(primary_key=True)
 
 
     # base infos
     name = models.CharField(max_length=20)
     age = models.IntegerField()
     gender = models.CharField(max_length=10, choices=GENDER_CHOICES)
+
 
     city = models.ForeignKey(
         City,
@@ -25,3 +26,7 @@ class Account(models.Model):
         related_name='user', 
         verbose_name="city"
     )
+
+
+    def __str__(self):
+        return self.username
