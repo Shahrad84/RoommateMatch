@@ -7,13 +7,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-```
 <title>Complete Profile | RoommateMatch</title>
 
 <link rel="stylesheet" href="{% static 'css/profile_complete.css' %}">
 <link rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-```
 
 </head>
 
@@ -21,7 +19,6 @@
 
 <main class="profile-page">
 
-```
 <div class="profile-container">
 
     <!-- ==============================
@@ -72,16 +69,28 @@
     <!-- ==============================
          MESSAGE
     =============================== -->
-    <div id="formMessage" class="form-message"></div>
+    {% if profile_form.non_field_errors or lifestyle_form.non_field_errors or preference_form.non_field_errors %}
+        <div id="formMessage" class="form-message form-message--error" style="display: block;">
+            {% for error in profile_form.non_field_errors %}
+                {{ error }}
+            {% endfor %}
+            {% for error in lifestyle_form.non_field_errors %}
+                {{ error }}
+            {% endfor %}
+            {% for error in preference_form.non_field_errors %}
+                {{ error }}
+            {% endfor %}
+        </div>
+    {% else %}
+        <div id="formMessage" class="form-message"></div>
+    {% endif %}
 
 
     <!-- ==============================
          FORM
     =============================== -->
 
-    <form id="profileForm"
-          method="POST"
-          action="/profile/complete/">
+    <form id="profileForm" method="POST" action="/profile/complete/">
 
         {% csrf_token %}
 
@@ -118,7 +127,12 @@
                     id="birthdate"
                     name="birthdate"
                     required
+                    value="{{ profile_form.birthdate.value|default:'' }}"
                 >
+
+                {% for error in profile_form.birthdate.errors %}
+                    <div class="text-danger">{{ error }}</div>
+                {% endfor %}
 
             </div>
 
@@ -138,7 +152,12 @@
                     maxlength="20"
                     placeholder="e.g. Software Developer"
                     required
+                    value="{{ profile_form.job.value|default:'' }}"
                 >
+
+                {% for error in profile_form.job.errors %}
+                    <div class="text-danger">{{ error }}</div>
+                {% endfor %}
 
             </div>
 
@@ -158,7 +177,11 @@
                     maxlength="200"
                     rows="5"
                     placeholder="Tell potential roommates a little about yourself..."
-                ></textarea>
+                >{{ profile_form.bio.value|default:'' }}</textarea>
+
+                {% for error in profile_form.bio.errors %}
+                    <div class="text-danger">{{ error }}</div>
+                {% endfor %}
 
                 <small>
                     Maximum 200 characters
@@ -216,12 +239,16 @@
                     required
                 >
                     <option value="">Select an option</option>
-                    <option value="never">Never</option>
-                    <option value="sometimes">Sometimes</option>
-                    <option value="often">Often</option>
-                    <option value="usually">Usually</option>
-                    <option value="always">Always</option>
+                    <option value="never" {% if lifestyle_form.cleaning_frequency.value == "never" %}selected{% endif %}>Never</option>
+                    <option value="sometimes" {% if lifestyle_form.cleaning_frequency.value == "sometimes" %}selected{% endif %}>Sometimes</option>
+                    <option value="often" {% if lifestyle_form.cleaning_frequency.value == "often" %}selected{% endif %}>Often</option>
+                    <option value="usually" {% if lifestyle_form.cleaning_frequency.value == "usually" %}selected{% endif %}>Usually</option>
+                    <option value="always" {% if lifestyle_form.cleaning_frequency.value == "always" %}selected{% endif %}>Always</option>
                 </select>
+
+                {% for error in lifestyle_form.cleaning_frequency.errors %}
+                    <div class="text-danger">{{ error }}</div>
+                {% endfor %}
 
             </div>
 
@@ -240,10 +267,14 @@
                     required
                 >
                     <option value="">Select an option</option>
-                    <option value="low">Low</option>
-                    <option value="medium">Medium</option>
-                    <option value="high">High</option>
+                    <option value="low" {% if lifestyle_form.noise_generating_level.value == "low" %}selected{% endif %}>Low</option>
+                    <option value="medium" {% if lifestyle_form.noise_generating_level.value == "medium" %}selected{% endif %}>Medium</option>
+                    <option value="high" {% if lifestyle_form.noise_generating_level.value == "high" %}selected{% endif %}>High</option>
                 </select>
+
+                {% for error in lifestyle_form.noise_generating_level.errors %}
+                    <div class="text-danger">{{ error }}</div>
+                {% endfor %}
 
             </div>
 
@@ -262,10 +293,14 @@
                     required
                 >
                     <option value="">Select an option</option>
-                    <option value="low">Low</option>
-                    <option value="medium">Medium</option>
-                    <option value="high">High</option>
+                    <option value="low" {% if lifestyle_form.noise_tolerance.value == "low" %}selected{% endif %}>Low</option>
+                    <option value="medium" {% if lifestyle_form.noise_tolerance.value == "medium" %}selected{% endif %}>Medium</option>
+                    <option value="high" {% if lifestyle_form.noise_tolerance.value == "high" %}selected{% endif %}>High</option>
                 </select>
+
+                {% for error in lifestyle_form.noise_tolerance.errors %}
+                    <div class="text-danger">{{ error }}</div>
+                {% endfor %}
 
             </div>
 
@@ -286,13 +321,17 @@
                         name="social_level"
                         min="1"
                         max="10"
-                        value="5"
+                        value="{{ lifestyle_form.social_level.value|default:5 }}"
                         required
                     >
 
-                    <span id="social_levelValue">5</span>
+                    <span id="social_levelValue">{{ lifestyle_form.social_level.value|default:5 }}</span>
 
                 </div>
+
+                {% for error in lifestyle_form.social_level.errors %}
+                    <div class="text-danger">{{ error }}</div>
+                {% endfor %}
 
             </div>
 
@@ -312,6 +351,7 @@
                             type="radio"
                             name="smoking"
                             value="true"
+                            {% if lifestyle_form.smoking.value == True %}checked{% endif %}
                             required
                         >
                         <span>Yes</span>
@@ -322,11 +362,17 @@
                             type="radio"
                             name="smoking"
                             value="false"
+                            {% if lifestyle_form.smoking.value == False %}checked{% endif %}
                         >
                         <span>No</span>
                     </label>
 
-                </div>
+                
+
+                {% for error in lifestyle_form.smoking.errors %}
+                    <div class="text-danger">{{ error }}</div>
+                {% endfor %}
+            </div>
 
             </div>
 
@@ -346,6 +392,7 @@
                             type="radio"
                             name="has_pets"
                             value="true"
+                            {% if lifestyle_form.has_pets.value == True %}checked{% endif %}
                             required
                         >
                         <span>Yes</span>
@@ -356,11 +403,17 @@
                             type="radio"
                             name="has_pets"
                             value="false"
+                            {% if lifestyle_form.has_pets.value == False %}checked{% endif %}
                         >
                         <span>No</span>
                     </label>
 
-                </div>
+                
+
+                {% for error in lifestyle_form.has_pets.errors %}
+                    <div class="text-danger">{{ error }}</div>
+                {% endfor %}
+            </div>
 
             </div>
 
@@ -379,12 +432,16 @@
                     required
                 >
                     <option value="">Select an option</option>
-                    <option value="never">Never</option>
-                    <option value="sometimes">Sometimes</option>
-                    <option value="often">Often</option>
-                    <option value="usually">Usually</option>
-                    <option value="always">Always</option>
+                    <option value="never" {% if lifestyle_form.cooking.value == "never" %}selected{% endif %}>Never</option>
+                    <option value="sometimes" {% if lifestyle_form.cooking.value == "sometimes" %}selected{% endif %}>Sometimes</option>
+                    <option value="often" {% if lifestyle_form.cooking.value == "often" %}selected{% endif %}>Often</option>
+                    <option value="usually" {% if lifestyle_form.cooking.value == "usually" %}selected{% endif %}>Usually</option>
+                    <option value="always" {% if lifestyle_form.cooking.value == "always" %}selected{% endif %}>Always</option>
                 </select>
+
+                {% for error in lifestyle_form.cooking.errors %}
+                    <div class="text-danger">{{ error }}</div>
+                {% endfor %}
 
             </div>
 
@@ -403,12 +460,16 @@
                     required
                 >
                     <option value="">Select an option</option>
-                    <option value="never">Never</option>
-                    <option value="sometimes">Sometimes</option>
-                    <option value="often">Often</option>
-                    <option value="usually">Usually</option>
-                    <option value="always">Always</option>
+                    <option value="never" {% if lifestyle_form.eating_at_home.value == "never" %}selected{% endif %}>Never</option>
+                    <option value="sometimes" {% if lifestyle_form.eating_at_home.value == "sometimes" %}selected{% endif %}>Sometimes</option>
+                    <option value="often" {% if lifestyle_form.eating_at_home.value == "often" %}selected{% endif %}>Often</option>
+                    <option value="usually" {% if lifestyle_form.eating_at_home.value == "usually" %}selected{% endif %}>Usually</option>
+                    <option value="always" {% if lifestyle_form.eating_at_home.value == "always" %}selected{% endif %}>Always</option>
                 </select>
+
+                {% for error in lifestyle_form.eating_at_home.errors %}
+                    <div class="text-danger">{{ error }}</div>
+                {% endfor %}
 
             </div>
 
@@ -426,7 +487,12 @@
                     id="wake_up"
                     name="wake_up"
                     required
+                    value="{{ lifestyle_form.wake_up.value|default:'' }}"
                 >
+
+                {% for error in lifestyle_form.wake_up.errors %}
+                    <div class="text-danger">{{ error }}</div>
+                {% endfor %}
 
             </div>
 
@@ -444,7 +510,12 @@
                     id="sleep"
                     name="sleep"
                     required
+                    value="{{ lifestyle_form.sleep.value|default:'' }}"
                 >
+
+                {% for error in lifestyle_form.sleep.errors %}
+                    <div class="text-danger">{{ error }}</div>
+                {% endfor %}
 
             </div>
 
@@ -463,12 +534,16 @@
                     required
                 >
                     <option value="">Select an option</option>
-                    <option value="never">Never</option>
-                    <option value="sometimes">Sometimes</option>
-                    <option value="often">Often</option>
-                    <option value="usually">Usually</option>
-                    <option value="always">Always</option>
+                    <option value="never" {% if lifestyle_form.guests.value == "never" %}selected{% endif %}>Never</option>
+                    <option value="sometimes" {% if lifestyle_form.guests.value == "sometimes" %}selected{% endif %}>Sometimes</option>
+                    <option value="often" {% if lifestyle_form.guests.value == "often" %}selected{% endif %}>Often</option>
+                    <option value="usually" {% if lifestyle_form.guests.value == "usually" %}selected{% endif %}>Usually</option>
+                    <option value="always" {% if lifestyle_form.guests.value == "always" %}selected{% endif %}>Always</option>
                 </select>
+
+                {% for error in lifestyle_form.guests.errors %}
+                    <div class="text-danger">{{ error }}</div>
+                {% endfor %}
 
             </div>
 
@@ -487,12 +562,16 @@
                     required
                 >
                     <option value="">Select an option</option>
-                    <option value="never">Never</option>
-                    <option value="sometimes">Sometimes</option>
-                    <option value="often">Often</option>
-                    <option value="usually">Usually</option>
-                    <option value="always">Always</option>
+                    <option value="never" {% if lifestyle_form.overnight_guests.value == "never" %}selected{% endif %}>Never</option>
+                    <option value="sometimes" {% if lifestyle_form.overnight_guests.value == "sometimes" %}selected{% endif %}>Sometimes</option>
+                    <option value="often" {% if lifestyle_form.overnight_guests.value == "often" %}selected{% endif %}>Often</option>
+                    <option value="usually" {% if lifestyle_form.overnight_guests.value == "usually" %}selected{% endif %}>Usually</option>
+                    <option value="always" {% if lifestyle_form.overnight_guests.value == "always" %}selected{% endif %}>Always</option>
                 </select>
+
+                {% for error in lifestyle_form.overnight_guests.errors %}
+                    <div class="text-danger">{{ error }}</div>
+                {% endfor %}
 
             </div>
 
@@ -557,13 +636,17 @@
                         name="cleanliness_weight"
                         min="1"
                         max="10"
-                        value="5"
+                        value="{{ preference_form.cleanliness_weight.value|default:5 }}"
                         required
                     >
 
-                    <span id="cleanliness_weightValue">5</span>
+                    <span id="cleanliness_weightValue">{{ preference_form.cleanliness_weight.value|default:5 }}</span>
 
                 </div>
+
+                {% for error in preference_form.cleanliness_weight.errors %}
+                    <div class="text-danger">{{ error }}</div>
+                {% endfor %}
 
             </div>
 
@@ -584,13 +667,17 @@
                         name="noise_weight"
                         min="1"
                         max="10"
-                        value="5"
+                        value="{{ preference_form.noise_weight.value|default:5 }}"
                         required
                     >
 
-                    <span id="noise_weightValue">5</span>
+                    <span id="noise_weightValue">{{ preference_form.noise_weight.value|default:5 }}</span>
 
                 </div>
+
+                {% for error in preference_form.noise_weight.errors %}
+                    <div class="text-danger">{{ error }}</div>
+                {% endfor %}
 
             </div>
 
@@ -611,13 +698,17 @@
                         name="social_weight"
                         min="1"
                         max="10"
-                        value="5"
+                        value="{{ preference_form.social_weight.value|default:5 }}"
                         required
                     >
 
-                    <span id="social_weightValue">5</span>
+                    <span id="social_weightValue">{{ preference_form.social_weight.value|default:5 }}</span>
 
                 </div>
+
+                {% for error in preference_form.social_weight.errors %}
+                    <div class="text-danger">{{ error }}</div>
+                {% endfor %}
 
             </div>
 
@@ -638,13 +729,17 @@
                         name="pets_weight"
                         min="1"
                         max="10"
-                        value="5"
+                        value="{{ preference_form.pets_weight.value|default:5 }}"
                         required
                     >
 
-                    <span id="pets_weightValue">5</span>
+                    <span id="pets_weightValue">{{ preference_form.pets_weight.value|default:5 }}</span>
 
                 </div>
+
+                {% for error in preference_form.pets_weight.errors %}
+                    <div class="text-danger">{{ error }}</div>
+                {% endfor %}
 
             </div>
 
@@ -665,13 +760,17 @@
                         name="cooking_weight"
                         min="1"
                         max="10"
-                        value="5"
+                        value="{{ preference_form.cooking_weight.value|default:5 }}"
                         required
                     >
 
-                    <span id="cooking_weightValue">5</span>
+                    <span id="cooking_weightValue">{{ preference_form.cooking_weight.value|default:5 }}</span>
 
                 </div>
+
+                {% for error in preference_form.cooking_weight.errors %}
+                    <div class="text-danger">{{ error }}</div>
+                {% endfor %}
 
             </div>
 
@@ -692,13 +791,17 @@
                         name="guests_weight"
                         min="1"
                         max="10"
-                        value="5"
+                        value="{{ preference_form.guests_weight.value|default:5 }}"
                         required
                     >
 
-                    <span id="guests_weightValue">5</span>
+                    <span id="guests_weightValue">{{ preference_form.guests_weight.value|default:5 }}</span>
 
                 </div>
+
+                {% for error in preference_form.guests_weight.errors %}
+                    <div class="text-danger">{{ error }}</div>
+                {% endfor %}
 
             </div>
 
@@ -719,13 +822,17 @@
                         name="sleep_schedule_weight"
                         min="1"
                         max="10"
-                        value="5"
+                        value="{{ preference_form.sleep_schedule_weight.value|default:5 }}"
                         required
                     >
 
-                    <span id="sleep_schedule_weightValue">5</span>
+                    <span id="sleep_schedule_weightValue">{{ preference_form.sleep_schedule_weight.value|default:5 }}</span>
 
                 </div>
+
+                {% for error in preference_form.sleep_schedule_weight.errors %}
+                    <div class="text-danger">{{ error }}</div>
+                {% endfor %}
 
             </div>
 
@@ -745,6 +852,7 @@
                             type="radio"
                             name="accepts_smokers"
                             value="true"
+                            {% if preference_form.accepts_smokers.value == True %}checked{% endif %}
                             required
                         >
                         <span>Yes</span>
@@ -755,11 +863,17 @@
                             type="radio"
                             name="accepts_smokers"
                             value="false"
+                            {% if preference_form.accepts_smokers.value == False %}checked{% endif %}
                         >
                         <span>No</span>
                     </label>
 
-                </div>
+                
+
+                {% for error in preference_form.accepts_smokers.errors %}
+                    <div class="text-danger">{{ error }}</div>
+                {% endfor %}
+            </div>
 
             </div>
 
@@ -779,6 +893,7 @@
                             type="radio"
                             name="accepts_pets"
                             value="true"
+                            {% if preference_form.accepts_pets.value == True %}checked{% endif %}
                             required
                         >
                         <span>Yes</span>
@@ -789,11 +904,17 @@
                             type="radio"
                             name="accepts_pets"
                             value="false"
+                            {% if preference_form.accepts_pets.value == False %}checked{% endif %}
                         >
                         <span>No</span>
                     </label>
 
-                </div>
+                
+
+                {% for error in preference_form.accepts_pets.errors %}
+                    <div class="text-danger">{{ error }}</div>
+                {% endfor %}
+            </div>
 
             </div>
 
@@ -826,11 +947,114 @@
     </form>
 
 </div>
-```
 
 </main>
 
-<script src="{% static 'js/profile_complete.js' %}"></script>
+<script>
+// ========================================
+// PROFILE COMPLETE - MULTI STEP FORM
+// ========================================
+
+(function() {
+
+const form = document.getElementById('profileForm');
+const steps = document.querySelectorAll('.profile-step');
+
+let currentStep = 1;
+const totalSteps = steps.length;
+
+
+// UPDATE STEP
+function updateStep(step) {
+    steps.forEach((element, index) => {
+        element.classList.toggle('profile-step--active', index === step - 1);
+    });
+
+    document.querySelectorAll('.progress-step').forEach((element, index) => {
+        element.classList.toggle('progress-step--active', index < step);
+    });
+}
+
+
+// NEXT STEP
+function nextStep() {
+    if (currentStep < totalSteps) {
+        currentStep++;
+        updateStep(currentStep);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+}
+
+
+// PREVIOUS STEP
+function previousStep() {
+    if (currentStep > 1) {
+        currentStep--;
+        updateStep(currentStep);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+}
+
+
+// NEXT BUTTONS
+document.querySelectorAll('[data-next]').forEach(button => {
+    button.addEventListener('click', nextStep);
+});
+
+
+// PREVIOUS BUTTONS
+document.querySelectorAll('[data-prev]').forEach(button => {
+    button.addEventListener('click', previousStep);
+});
+
+
+// FORM SUBMIT - just disable button, let it submit normally
+if (form) {
+    form.addEventListener('submit', function() {
+        const submitButton = form.querySelector('button[type="submit"]');
+        if (submitButton) {
+            submitButton.disabled = true;
+            submitButton.innerHTML = 'Saving...';
+        }
+    });
+}
+
+
+// RANGE INPUTS
+document.querySelectorAll('input[type="range"]').forEach(range => {
+    range.addEventListener('input', function() {
+        const valueElement = document.getElementById(this.id + 'Value');
+        if (valueElement) {
+            valueElement.textContent = this.value;
+        }
+    });
+});
+
+
+// ENTER KEY
+document.querySelectorAll('.profile-step input, .profile-step select, .profile-step textarea').forEach(input => {
+    input.addEventListener('keydown', function(event) {
+        if (event.key !== 'Enter') return;
+        if (this.tagName === 'TEXTAREA') return;
+        
+        event.preventDefault();
+        
+        if (currentStep < totalSteps) {
+            nextStep();
+        } else {
+            form.requestSubmit();
+        }
+    });
+});
+
+
+// INITIALIZE
+if (totalSteps > 0) {
+    updateStep(1);
+}
+
+})();
+</script>
 
 </body>
 </html>

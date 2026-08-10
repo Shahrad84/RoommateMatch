@@ -1,5 +1,25 @@
 from django.shortcuts import render, redirect
 from .models import Profile, LifestyleProfile, Preference
+from django import forms
+
+class ProfileForm(forms.ModelForm):
+    class Meta:
+        model = Profile
+        fields = ['birthdate', 'job', 'bio']
+
+class LifestyleProfileForm(forms.ModelForm):
+    class Meta:
+        model = LifestyleProfile
+        fields = ['cleaning_frequency', 'noise_generating_level', 'noise_tolerance', 
+                 'social_level', 'smoking', 'has_pets', 'cooking', 'eating_at_home',
+                 'wake_up', 'sleep', 'guests', 'overnight_guests']
+
+class PreferenceForm(forms.ModelForm):
+    class Meta:
+        model = Preference
+        fields = ['cleanliness_weight', 'noise_weight', 'social_weight', 
+                 'pets_weight', 'cooking_weight', 'guests_weight', 
+                 'sleep_schedule_weight', 'accepts_smokers', 'accepts_pets']
 
 
 def profile_complete(request):
@@ -11,42 +31,53 @@ def profile_complete(request):
 
         account = request.user
 
-        Profile.objects.create(
-            account=account,
-            birthdate=request.POST.get("birthdate"),
-            job=request.POST.get("job"),
-            bio=request.POST.get("bio"),
-        )
+        try:
+            profile = Profile.objects.get(account=account)
+        except Profile.DoesNotExist:
+            profile = None
 
-        LifestyleProfile.objects.create(
-            account=account,
-            cleaning_frequency=request.POST.get("cleaning_frequency"),
-            noise_generating_level=request.POST.get("noise_generating_level"),
-            noise_tolerance=request.POST.get("noise_tolerance"),
-            social_level=request.POST.get("social_level"),
-            smoking=request.POST.get("smoking") == "true",
-            has_pets=request.POST.get("has_pets") == "true",
-            cooking=request.POST.get("cooking"),
-            eating_at_home=request.POST.get("eating_at_home"),
-            wake_up=request.POST.get("wake_up"),
-            sleep=request.POST.get("sleep"),
-            guests=request.POST.get("guests"),
-            overnight_guests=request.POST.get("overnight_guests"),
-        )
+        try:
+            lifestyle = LifestyleProfile.objects.get(account=account)
+        except LifestyleProfile.DoesNotExist:
+            lifestyle = None
 
-        Preference.objects.create(
-            account=account,
-            cleanliness_weight=request.POST.get("cleanliness_weight"),
-            noise_weight=request.POST.get("noise_weight"),
-            social_weight=request.POST.get("social_weight"),
-            pets_weight=request.POST.get("pets_weight"),
-            cooking_weight=request.POST.get("cooking_weight"),
-            guests_weight=request.POST.get("guests_weight"),
-            sleep_schedule_weight=request.POST.get("sleep_schedule_weight"),
-            accepts_smokers=request.POST.get("accepts_smokers") == "true",
-            accepts_pets=request.POST.get("accepts_pets") == "true",
-        )
+        try:
+            preference = Preference.objects.get(account=account)
+        except Preference.DoesNotExist:
+            preference = None
 
-        return redirect("/dashboard/")
+        profile_form = ProfileForm(request.POST, instance=profile)
+        lifestyle_form = LifestyleProfileForm(request.POST, instance=lifestyle)
+        preference_form = PreferenceForm(request.POST, instance=preference)
 
-    return render(request, "templates/profile_complete.html")
+        if profile_form.is_valid() and lifestyle_form.is_valid() and preference_form.is_valid():
+            profile_form.save()
+            lifestyle_form.save()
+            preference_form.save()
+            return redirect("/dashboard/")
+
+    else:
+        try:
+            profile = Profile.objects.get(account=request.user)
+        except Profile.DoesNotExist:
+            profile = None
+
+        try:
+            lifestyle = LifestyleProfile.objects.get(account=request.user)
+        except LifestyleProfile.DoesNotExist:
+            lifestyle = None
+
+        try:
+            preference = Preference.objects.get(account=request.user)
+        except Preference.DoesNotExist:
+            preference = None
+
+        profile_form = ProfileForm(instance=profile)
+        lifestyle_form = LifestyleProfileForm(instance=lifestyle)
+        preference_form = PreferenceForm(instance=preference)
+
+    return render(request, "templates/profile_complete.html", {
+        'profile_form': profile_form,
+        'lifestyle_form': lifestyle_form,
+        'preference_form': preference_form,
+    })
