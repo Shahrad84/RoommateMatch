@@ -1,209 +1,84 @@
+// ========================================
+// LOGIN FORM — UX ENHANCEMENTS ONLY
+// ========================================
+// This form submits natively to Django (method="post" in the HTML).
+// This script does NOT intercept submission, call fetch, or touch
+// the network in any way — it only adds small visual niceties.
+// Safe to remove entirely; the form works without it.
+
 document.addEventListener('DOMContentLoaded', function () {
 
     const form = document.getElementById('loginForm');
-    const messageBox = document.getElementById('loginMessage');
+
     const loginBtn = document.getElementById('loginBtn');
 
-    // ==============================
-    // Show Message
-    // ==============================
+    const usernameInput = document.getElementById('username');
 
-    function showMessage(text, type = 'success') {
+    const passwordInput = document.getElementById('password');
 
-        messageBox.textContent = text;
-        messageBox.className = 'login__message';
-        messageBox.classList.add(`login__message--${type}`);
-        messageBox.style.display = 'block';
 
-        clearTimeout(window.messageTimeout);
+    // ========================================
+    // Clear error styling as user retypes
+    // ========================================
 
-        window.messageTimeout = setTimeout(() => {
-            messageBox.style.display = 'none';
-        }, 5000);
+    [usernameInput, passwordInput].forEach(input => {
+
+        if (!input) {
+            return;
+        }
+
+        input.addEventListener('input', function () {
+
+            this.classList.remove('error');
+
+        });
+
+    });
+
+
+    // ========================================
+    // Password visibility toggle
+    // ========================================
+    // Only runs if a toggle button with this id exists in the HTML.
+    // Safe no-op otherwise — nothing to add to the markup unless you want it.
+
+    const toggleBtn = document.getElementById('togglePassword');
+
+    if (toggleBtn && passwordInput) {
+
+        toggleBtn.addEventListener('click', function () {
+
+            const isHidden = passwordInput.type === 'password';
+
+            passwordInput.type = isHidden ? 'text' : 'password';
+
+            this.classList.toggle('fa-eye');
+
+            this.classList.toggle('fa-eye-slash');
+
+        });
+
     }
 
 
-    // ==============================
-    // Submit Login
-    // ==============================
+    // ========================================
+    // Loading state on submit
+    // ========================================
+    // The browser is already navigating away by the time this runs,
+    // so this only affects the brief moment before the page changes —
+    // purely cosmetic, doesn't block or delay the actual submission.
 
-    async function submitLogin(e) {
+    if (form && loginBtn) {
 
-        e.preventDefault();
+        form.addEventListener('submit', function () {
 
-        // Clear previous errors
-        document
-            .querySelectorAll('.error')
-            .forEach(el => el.classList.remove('error'));
-
-
-        const username =
-            document.getElementById('username').value.trim();
-
-        const password =
-            document.getElementById('password').value;
-
-
-        // ==============================
-        // Client-side validation
-        // ==============================
-
-        if (!username) {
-
-            document
-                .getElementById('username')
-                .classList.add('error');
-
-            showMessage(
-                'Username is required',
-                'error'
-            );
-
-            return;
-        }
-
-
-        if (!password) {
-
-            document
-                .getElementById('password')
-                .classList.add('error');
-
-            showMessage(
-                'Password is required',
-                'error'
-            );
-
-            return;
-        }
-
-
-        // ==============================
-        // Disable button
-        // ==============================
-
-        loginBtn.disabled = true;
-
-        loginBtn.innerHTML =
-            '<i class="fas fa-spinner fa-spin"></i> Logging in...';
-
-
-        try {
-
-            // ==============================
-            // Send request
-            // ==============================
-
-            const response = await fetch('/api/login/', {
-
-                method: 'POST',
-
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-
-                body: JSON.stringify({
-                    username: username,
-                    password: password
-                })
-            });
-
-
-            // ==============================
-            // Parse response
-            // ==============================
-
-            const data = await response.json();
-
-
-            // ==============================
-            // Successful login
-            // ==============================
-
-            if (response.ok) {
-
-                // Save JWT
-                localStorage.setItem(
-                    'access_token',
-                    data.data.access
-                );
-
-                localStorage.setItem(
-                    'refresh_token',
-                    data.data.refresh
-                );
-
-
-                showMessage(
-                    'Login successful! Redirecting...',
-                    'success'
-                );
-
-
-                // Backend determines destination
-                setTimeout(() => {
-
-                    window.location.href =
-                        data.redirect;
-
-                }, 800);
-
-
-                return;
-            }
-
-
-            // ==============================
-            // Backend validation error
-            // ==============================
-
-            showMessage(
-                data.message || 'Login failed',
-                'error'
-            );
-
-
-            // Highlight fields with errors
-            if (data.errors) {
-
-                Object.keys(data.errors).forEach(key => {
-
-                    const field =
-                        document.getElementById(key);
-
-                    if (field) {
-                        field.classList.add('error');
-                    }
-                });
-            }
-
-
-        } catch (error) {
-
-            console.error('Login error:', error);
-
-            showMessage(
-                'Unable to connect to the server.',
-                'error'
-            );
-
-        } finally {
-
-            loginBtn.disabled = false;
+            loginBtn.disabled = true;
 
             loginBtn.innerHTML =
-                'Log In <i class="fas fa-arrow-right"></i>';
-        }
+                '<i class="fas fa-spinner fa-spin"></i> Logging in...';
+
+        });
+
     }
-
-
-    // ==============================
-    // Event Listener
-    // ==============================
-
-    form.addEventListener(
-        'submit',
-        submitLogin
-    );
 
 });

@@ -46,16 +46,34 @@
                     </p>
                 </div>
 
+                <!-- ====== GENERAL / NON-FIELD ERRORS ====== -->
+                {% if form.non_field_errors %}
+                    <div class="login__message login__message--error" style="display: block;">
+                        {% for error in form.non_field_errors %}
+                            {{ error }}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
                 <!-- ====== FORM ====== -->
-                <form id="loginForm" class="login__form">
+                <form id="loginForm" class="login__form" method="post">
+                    {% csrf_token %}
+
                     <div class="form-group">
                         <label for="username">Username</label>
-                        <input type="text" id="username" name="username" placeholder="john_doe" required />
+                        <input type="text" id="username" name="username" placeholder="john_doe"
+                               value="{{ form.username.value|default:'' }}" required />
+                        {% for error in form.username.errors %}
+                            <div class="text-danger">{{ error }}</div>
+                        {% endfor %}
                     </div>
 
                     <div class="form-group">
                         <label for="password">Password</label>
                         <input type="password" id="password" name="password" placeholder="••••••••" required />
+                        {% for error in form.password.errors %}
+                            <div class="text-danger">{{ error }}</div>
+                        {% endfor %}
                     </div>
 
                     <div class="form-options">
@@ -69,8 +87,6 @@
                     <button type="submit" class="btn btn--primary btn--lg btn--full" id="loginBtn">
                         Log In <i class="fas fa-arrow-right"></i>
                     </button>
-
-                    <div id="loginMessage" class="login__message" style="display: none;"></div>
                 </form>
 
                 <div class="login__footer">
@@ -92,6 +108,5 @@
 
     <!-- JavaScript -->
     <script src="{% static 'js/main.js' %}"></script>
-    <script src="{% static 'js/login.js' %}"></script>
 </body>
 </html>

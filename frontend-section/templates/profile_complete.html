@@ -1,0 +1,836 @@
+{% load static %}
+
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+```
+<title>Complete Profile | RoommateMatch</title>
+
+<link rel="stylesheet" href="{% static 'css/profile_complete.css' %}">
+<link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+```
+
+</head>
+
+<body>
+
+<main class="profile-page">
+
+```
+<div class="profile-container">
+
+    <!-- ==============================
+         HEADER
+    =============================== -->
+    <header class="profile-header">
+
+        <div class="profile-header__icon">
+            <i class="fas fa-user-circle"></i>
+        </div>
+
+        <h1>Complete Your Profile</h1>
+
+        <p>
+            Tell us a little about yourself so we can find better roommates for you.
+        </p>
+
+    </header>
+
+
+    <!-- ==============================
+         PROGRESS
+    =============================== -->
+    <div class="profile-progress">
+
+        <div class="progress-step progress-step--active">
+            <span>1</span>
+            <p>About You</p>
+        </div>
+
+        <div class="progress-line"></div>
+
+        <div class="progress-step">
+            <span>2</span>
+            <p>Lifestyle</p>
+        </div>
+
+        <div class="progress-line"></div>
+
+        <div class="progress-step">
+            <span>3</span>
+            <p>Preferences</p>
+        </div>
+
+    </div>
+
+
+    <!-- ==============================
+         MESSAGE
+    =============================== -->
+    <div id="formMessage" class="form-message"></div>
+
+
+    <!-- ==============================
+         FORM
+    =============================== -->
+
+    <form id="profileForm"
+          method="POST"
+          action="/profile/complete/">
+
+        {% csrf_token %}
+
+
+        <!-- =====================================
+             STEP 1 - ABOUT YOU
+        ====================================== -->
+
+        <section class="profile-step profile-step--active"
+                 data-step="1">
+
+            <div class="step-header">
+
+                <span class="step-header__number">01</span>
+
+                <div>
+                    <h2>About You</h2>
+                    <p>Let's start with some basic information.</p>
+                </div>
+
+            </div>
+
+
+            <!-- Birth Date -->
+
+            <div class="form-group">
+
+                <label for="birthdate">
+                    Birth Date
+                </label>
+
+                <input
+                    type="date"
+                    id="birthdate"
+                    name="birthdate"
+                    required
+                >
+
+            </div>
+
+
+            <!-- Job -->
+
+            <div class="form-group">
+
+                <label for="job">
+                    Job / Occupation
+                </label>
+
+                <input
+                    type="text"
+                    id="job"
+                    name="job"
+                    maxlength="20"
+                    placeholder="e.g. Software Developer"
+                    required
+                >
+
+            </div>
+
+
+            <!-- Bio -->
+
+            <div class="form-group">
+
+                <label for="bio">
+                    About You
+                    <span class="optional">(Optional)</span>
+                </label>
+
+                <textarea
+                    id="bio"
+                    name="bio"
+                    maxlength="200"
+                    rows="5"
+                    placeholder="Tell potential roommates a little about yourself..."
+                ></textarea>
+
+                <small>
+                    Maximum 200 characters
+                </small>
+
+            </div>
+
+
+            <div class="step-actions step-actions--right">
+
+                <button
+                    type="button"
+                    class="btn btn--primary"
+                    data-next
+                >
+                    Continue
+                    <i class="fas fa-arrow-right"></i>
+                </button>
+
+            </div>
+
+        </section>
+
+
+        <!-- =====================================
+             STEP 2 - LIFESTYLE
+        ====================================== -->
+
+        <section class="profile-step"
+                 data-step="2">
+
+            <div class="step-header">
+
+                <span class="step-header__number">02</span>
+
+                <div>
+                    <h2>Your Lifestyle</h2>
+                    <p>Tell us how you normally live.</p>
+                </div>
+
+            </div>
+
+
+            <!-- Cleaning -->
+
+            <div class="form-group">
+
+                <label for="cleaning_frequency">
+                    How often do you clean?
+                </label>
+
+                <select
+                    id="cleaning_frequency"
+                    name="cleaning_frequency"
+                    required
+                >
+                    <option value="">Select an option</option>
+                    <option value="never">Never</option>
+                    <option value="sometimes">Sometimes</option>
+                    <option value="often">Often</option>
+                    <option value="usually">Usually</option>
+                    <option value="always">Always</option>
+                </select>
+
+            </div>
+
+
+            <!-- Noise generating -->
+
+            <div class="form-group">
+
+                <label for="noise_generating_level">
+                    How much noise do you usually make?
+                </label>
+
+                <select
+                    id="noise_generating_level"
+                    name="noise_generating_level"
+                    required
+                >
+                    <option value="">Select an option</option>
+                    <option value="low">Low</option>
+                    <option value="medium">Medium</option>
+                    <option value="high">High</option>
+                </select>
+
+            </div>
+
+
+            <!-- Noise tolerance -->
+
+            <div class="form-group">
+
+                <label for="noise_tolerance">
+                    How tolerant are you of noise?
+                </label>
+
+                <select
+                    id="noise_tolerance"
+                    name="noise_tolerance"
+                    required
+                >
+                    <option value="">Select an option</option>
+                    <option value="low">Low</option>
+                    <option value="medium">Medium</option>
+                    <option value="high">High</option>
+                </select>
+
+            </div>
+
+
+            <!-- Social Level -->
+
+            <div class="form-group">
+
+                <label for="social_level">
+                    How social are you?
+                </label>
+
+                <div class="range-wrapper">
+
+                    <input
+                        type="range"
+                        id="social_level"
+                        name="social_level"
+                        min="1"
+                        max="10"
+                        value="5"
+                        required
+                    >
+
+                    <span id="social_levelValue">5</span>
+
+                </div>
+
+            </div>
+
+
+            <!-- Smoking -->
+
+            <div class="form-group">
+
+                <label>
+                    Do you smoke?
+                </label>
+
+                <div class="radio-group">
+
+                    <label class="radio-option">
+                        <input
+                            type="radio"
+                            name="smoking"
+                            value="true"
+                            required
+                        >
+                        <span>Yes</span>
+                    </label>
+
+                    <label class="radio-option">
+                        <input
+                            type="radio"
+                            name="smoking"
+                            value="false"
+                        >
+                        <span>No</span>
+                    </label>
+
+                </div>
+
+            </div>
+
+
+            <!-- Pets -->
+
+            <div class="form-group">
+
+                <label>
+                    Do you have pets?
+                </label>
+
+                <div class="radio-group">
+
+                    <label class="radio-option">
+                        <input
+                            type="radio"
+                            name="has_pets"
+                            value="true"
+                            required
+                        >
+                        <span>Yes</span>
+                    </label>
+
+                    <label class="radio-option">
+                        <input
+                            type="radio"
+                            name="has_pets"
+                            value="false"
+                        >
+                        <span>No</span>
+                    </label>
+
+                </div>
+
+            </div>
+
+
+            <!-- Cooking -->
+
+            <div class="form-group">
+
+                <label for="cooking">
+                    How often do you cook?
+                </label>
+
+                <select
+                    id="cooking"
+                    name="cooking"
+                    required
+                >
+                    <option value="">Select an option</option>
+                    <option value="never">Never</option>
+                    <option value="sometimes">Sometimes</option>
+                    <option value="often">Often</option>
+                    <option value="usually">Usually</option>
+                    <option value="always">Always</option>
+                </select>
+
+            </div>
+
+
+            <!-- Eating at home -->
+
+            <div class="form-group">
+
+                <label for="eating_at_home">
+                    How often do you eat at home?
+                </label>
+
+                <select
+                    id="eating_at_home"
+                    name="eating_at_home"
+                    required
+                >
+                    <option value="">Select an option</option>
+                    <option value="never">Never</option>
+                    <option value="sometimes">Sometimes</option>
+                    <option value="often">Often</option>
+                    <option value="usually">Usually</option>
+                    <option value="always">Always</option>
+                </select>
+
+            </div>
+
+
+            <!-- Wake up -->
+
+            <div class="form-group">
+
+                <label for="wake_up">
+                    What time do you usually wake up?
+                </label>
+
+                <input
+                    type="time"
+                    id="wake_up"
+                    name="wake_up"
+                    required
+                >
+
+            </div>
+
+
+            <!-- Sleep -->
+
+            <div class="form-group">
+
+                <label for="sleep">
+                    What time do you usually go to sleep?
+                </label>
+
+                <input
+                    type="time"
+                    id="sleep"
+                    name="sleep"
+                    required
+                >
+
+            </div>
+
+
+            <!-- Guests -->
+
+            <div class="form-group">
+
+                <label for="guests">
+                    How often do you have guests?
+                </label>
+
+                <select
+                    id="guests"
+                    name="guests"
+                    required
+                >
+                    <option value="">Select an option</option>
+                    <option value="never">Never</option>
+                    <option value="sometimes">Sometimes</option>
+                    <option value="often">Often</option>
+                    <option value="usually">Usually</option>
+                    <option value="always">Always</option>
+                </select>
+
+            </div>
+
+
+            <!-- Overnight Guests -->
+
+            <div class="form-group">
+
+                <label for="overnight_guests">
+                    How often do you have overnight guests?
+                </label>
+
+                <select
+                    id="overnight_guests"
+                    name="overnight_guests"
+                    required
+                >
+                    <option value="">Select an option</option>
+                    <option value="never">Never</option>
+                    <option value="sometimes">Sometimes</option>
+                    <option value="often">Often</option>
+                    <option value="usually">Usually</option>
+                    <option value="always">Always</option>
+                </select>
+
+            </div>
+
+
+            <div class="step-actions">
+
+                <button
+                    type="button"
+                    class="btn btn--outline"
+                    data-prev
+                >
+                    <i class="fas fa-arrow-left"></i>
+                    Back
+                </button>
+
+                <button
+                    type="button"
+                    class="btn btn--primary"
+                    data-next
+                >
+                    Continue
+                    <i class="fas fa-arrow-right"></i>
+                </button>
+
+            </div>
+
+        </section>
+
+
+        <!-- =====================================
+             STEP 3 - PREFERENCES
+        ====================================== -->
+
+        <section class="profile-step"
+                 data-step="3">
+
+            <div class="step-header">
+
+                <span class="step-header__number">03</span>
+
+                <div>
+                    <h2>Your Preferences</h2>
+                    <p>How important are these things to you?</p>
+                </div>
+
+            </div>
+
+
+            <!-- Cleanliness -->
+
+            <div class="form-group">
+
+                <label for="cleanliness_weight">
+                    Cleanliness importance
+                </label>
+
+                <div class="range-wrapper">
+
+                    <input
+                        type="range"
+                        id="cleanliness_weight"
+                        name="cleanliness_weight"
+                        min="1"
+                        max="10"
+                        value="5"
+                        required
+                    >
+
+                    <span id="cleanliness_weightValue">5</span>
+
+                </div>
+
+            </div>
+
+
+            <!-- Noise -->
+
+            <div class="form-group">
+
+                <label for="noise_weight">
+                    Noise importance
+                </label>
+
+                <div class="range-wrapper">
+
+                    <input
+                        type="range"
+                        id="noise_weight"
+                        name="noise_weight"
+                        min="1"
+                        max="10"
+                        value="5"
+                        required
+                    >
+
+                    <span id="noise_weightValue">5</span>
+
+                </div>
+
+            </div>
+
+
+            <!-- Social -->
+
+            <div class="form-group">
+
+                <label for="social_weight">
+                    Social compatibility importance
+                </label>
+
+                <div class="range-wrapper">
+
+                    <input
+                        type="range"
+                        id="social_weight"
+                        name="social_weight"
+                        min="1"
+                        max="10"
+                        value="5"
+                        required
+                    >
+
+                    <span id="social_weightValue">5</span>
+
+                </div>
+
+            </div>
+
+
+            <!-- Pets -->
+
+            <div class="form-group">
+
+                <label for="pets_weight">
+                    Pet compatibility importance
+                </label>
+
+                <div class="range-wrapper">
+
+                    <input
+                        type="range"
+                        id="pets_weight"
+                        name="pets_weight"
+                        min="1"
+                        max="10"
+                        value="5"
+                        required
+                    >
+
+                    <span id="pets_weightValue">5</span>
+
+                </div>
+
+            </div>
+
+
+            <!-- Cooking -->
+
+            <div class="form-group">
+
+                <label for="cooking_weight">
+                    Cooking compatibility importance
+                </label>
+
+                <div class="range-wrapper">
+
+                    <input
+                        type="range"
+                        id="cooking_weight"
+                        name="cooking_weight"
+                        min="1"
+                        max="10"
+                        value="5"
+                        required
+                    >
+
+                    <span id="cooking_weightValue">5</span>
+
+                </div>
+
+            </div>
+
+
+            <!-- Guests -->
+
+            <div class="form-group">
+
+                <label for="guests_weight">
+                    Guests compatibility importance
+                </label>
+
+                <div class="range-wrapper">
+
+                    <input
+                        type="range"
+                        id="guests_weight"
+                        name="guests_weight"
+                        min="1"
+                        max="10"
+                        value="5"
+                        required
+                    >
+
+                    <span id="guests_weightValue">5</span>
+
+                </div>
+
+            </div>
+
+
+            <!-- Sleep -->
+
+            <div class="form-group">
+
+                <label for="sleep_schedule_weight">
+                    Sleep schedule importance
+                </label>
+
+                <div class="range-wrapper">
+
+                    <input
+                        type="range"
+                        id="sleep_schedule_weight"
+                        name="sleep_schedule_weight"
+                        min="1"
+                        max="10"
+                        value="5"
+                        required
+                    >
+
+                    <span id="sleep_schedule_weightValue">5</span>
+
+                </div>
+
+            </div>
+
+
+            <!-- Accept Smokers -->
+
+            <div class="form-group">
+
+                <label>
+                    Are you comfortable living with smokers?
+                </label>
+
+                <div class="radio-group">
+
+                    <label class="radio-option">
+                        <input
+                            type="radio"
+                            name="accepts_smokers"
+                            value="true"
+                            required
+                        >
+                        <span>Yes</span>
+                    </label>
+
+                    <label class="radio-option">
+                        <input
+                            type="radio"
+                            name="accepts_smokers"
+                            value="false"
+                        >
+                        <span>No</span>
+                    </label>
+
+                </div>
+
+            </div>
+
+
+            <!-- Accept Pets -->
+
+            <div class="form-group">
+
+                <label>
+                    Are you comfortable living with pets?
+                </label>
+
+                <div class="radio-group">
+
+                    <label class="radio-option">
+                        <input
+                            type="radio"
+                            name="accepts_pets"
+                            value="true"
+                            required
+                        >
+                        <span>Yes</span>
+                    </label>
+
+                    <label class="radio-option">
+                        <input
+                            type="radio"
+                            name="accepts_pets"
+                            value="false"
+                        >
+                        <span>No</span>
+                    </label>
+
+                </div>
+
+            </div>
+
+
+            <!-- Final Actions -->
+
+            <div class="step-actions">
+
+                <button
+                    type="button"
+                    class="btn btn--outline"
+                    data-prev
+                >
+                    <i class="fas fa-arrow-left"></i>
+                    Back
+                </button>
+
+                <button
+                    type="submit"
+                    class="btn btn--primary"
+                >
+                    Complete Profile
+                    <i class="fas fa-check"></i>
+                </button>
+
+            </div>
+
+        </section>
+
+    </form>
+
+</div>
+```
+
+</main>
+
+<script src="{% static 'js/profile_complete.js' %}"></script>
+
+</body>
+</html>

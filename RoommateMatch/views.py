@@ -4,3 +4,6 @@ from django.http import HttpResponse
 
 def main_page(request):
     return render(request, "templates/main.html")
+
+def dashboard_page(request):
+    return render(request, "templates/dashboard.html")

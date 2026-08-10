@@ -1,6 +1,11 @@
 // ========================================
-// SIGNUP FORM
+// SIGNUP FORM — STEP NAVIGATION ONLY
 // ========================================
+// This form now submits normally to Django (method="post" in the HTML).
+// This script ONLY handles the multi-step UI (showing/hiding steps,
+// Next/Back buttons, client-side "did you fill this in" checks).
+// It does NOT intercept the final submit or talk to any API —
+// Django's view handles validation, errors, and redirecting.
 
 document.addEventListener('DOMContentLoaded', function () {
 
@@ -16,40 +21,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const stepIndicator = document.getElementById('currentStep');
 
-    const messageBox = document.getElementById('formMessage');
-
 
     let currentStep = 1;
 
     const totalSteps = steps.length;
-
-
-    // ========================================
-    // Show Message
-    // ========================================
-
-    function showMessage(text, type = 'success') {
-
-        messageBox.textContent = text;
-
-        messageBox.className = 'signup__message';
-
-        messageBox.classList.add(
-            `signup__message--${type}`
-        );
-
-        messageBox.style.display = 'block';
-
-
-        clearTimeout(window.messageTimeout);
-
-
-        window.messageTimeout = setTimeout(() => {
-
-            messageBox.style.display = 'none';
-
-        }, 5000);
-    }
 
 
     // ========================================
@@ -148,8 +123,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
     // ========================================
-    // Validate Step
+    // Validate Step (client-side UX only)
     // ========================================
+    // Django re-validates everything server-side regardless — this just
+    // gives the user a fast in-browser hint instead of a round trip,
+    // and stops empty hidden-step fields from slipping through (browsers
+    // skip "required" checks on fields that are display:none).
 
     function validateStep(step) {
 
@@ -173,7 +152,7 @@ document.addEventListener('DOMContentLoaded', function () {
         let isValid = true;
 
 
-        // Remove old errors
+        // Remove old error highlighting
 
         inputs.forEach(input => {
 
@@ -195,7 +174,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
 
 
-        // Password validation
+        // Password match / length (step 1 only)
 
         if (step === 1) {
 
@@ -216,11 +195,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 confirm.classList.add('error');
 
-                showMessage(
-                    'Passwords do not match!',
-                    'error'
-                );
-
                 isValid = false;
             }
 
@@ -233,22 +207,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 password.classList.add('error');
 
-                showMessage(
-                    'Password must be at least 6 characters!',
-                    'error'
-                );
-
                 isValid = false;
             }
-        }
-
-
-        if (!isValid) {
-
-            showMessage(
-                'Please fill in all required fields.',
-                'error'
-            );
         }
 
 
@@ -257,20 +217,14 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
     // ========================================
-    // Submit Form
+    // Final Submit Check
     // ========================================
+    // Runs right before the browser sends the form to Django. If any
+    // step is incomplete, we stop the submit and jump the user to the
+    // first problem step. Otherwise we let the native form submission
+    // proceed as normal — no preventDefault, no fetch.
 
-    async function submitForm(e) {
-
-        e.preventDefault();
-
-
-        // ------------------------------------
-        // Validate all steps
-        // ------------------------------------
-
-        let allValid = true;
-
+    function onSubmit(e) {
 
         for (
             let i = 1;
@@ -280,213 +234,17 @@ document.addEventListener('DOMContentLoaded', function () {
 
             if (!validateStep(i)) {
 
-                allValid = false;
+                e.preventDefault();
 
                 currentStep = i;
 
                 updateStep(i);
 
-                break;
-            }
-        }
-
-
-        if (!allValid) {
-            return;
-        }
-
-
-        // ------------------------------------
-        // Collect form data
-        // ------------------------------------
-
-        const formData = {
-
-            username:
-                document.getElementById('username').value.trim(),
-
-            email:
-                document.getElementById('email').value.trim(),
-
-            password:
-                document.getElementById('password').value,
-
-            password2:
-                document.getElementById('confirmPassword').value,
-
-            fullName:
-                document.getElementById('fullName').value.trim(),
-
-            age:
-                document.getElementById('age').value,
-
-            gender:
-                document.getElementById('gender').value,
-
-            city:
-                document.getElementById('city').value || null,
-
-            bio:
-                document.getElementById('bio').value.trim()
-        };
-
-
-        // ------------------------------------
-        // Disable button
-        // ------------------------------------
-
-        submitBtn.disabled = true;
-
-        submitBtn.innerHTML =
-            '<i class="fas fa-spinner fa-spin"></i> Creating...';
-
-
-        try {
-
-            // --------------------------------
-            // Send API request
-            // --------------------------------
-
-            const response = await fetch(
-                '/api/signup/',
-                {
-                    method: 'POST',
-
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-
-                    body: JSON.stringify(formData)
-                }
-            );
-
-
-            // --------------------------------
-            // Parse JSON
-            // --------------------------------
-
-            let data;
-
-
-            try {
-
-                data = await response.json();
-
-            } catch (error) {
-
-                throw new Error(
-                    'Server returned an invalid response.'
-                );
-            }
-
-
-            // --------------------------------
-            // Success
-            // --------------------------------
-
-            if (response.ok) {
-
-                showMessage(
-                    '✅ Account created successfully!',
-                    'success'
-                );
-
-
-                // Save JWT
-
-                if (
-                    data.data &&
-                    data.data.access &&
-                    data.data.refresh
-                ) {
-
-                    localStorage.setItem(
-                        'access_token',
-                        data.data.access
-                    );
-
-                    localStorage.setItem(
-                        'refresh_token',
-                        data.data.refresh
-                    );
-                }
-
-
-                // --------------------------------
-                // Backend decides destination
-                // --------------------------------
-
-                if (data.redirect) {
-
-                    setTimeout(() => {
-
-                        window.location.href =
-                            data.redirect;
-
-                    }, 1000);
-
-                } else {
-
-                    showMessage(
-                        'Account created, but redirect URL was not provided.',
-                        'error'
-                    );
-                }
-
-
                 return;
             }
-
-
-            // --------------------------------
-            // API validation error
-            // --------------------------------
-
-            showMessage(
-                data.message ||
-                'Something went wrong!',
-                'error'
-            );
-
-
-            // Highlight fields
-
-            if (data.errors) {
-
-                Object.keys(data.errors).forEach(key => {
-
-                    const field =
-                        document.getElementById(key);
-
-                    if (field) {
-
-                        field.classList.add('error');
-                    }
-                });
-            }
-
-
-        } catch (error) {
-
-            console.error(
-                'Signup error:',
-                error
-            );
-
-
-            showMessage(
-                'Unable to connect to the server.',
-                'error'
-            );
-
-
-        } finally {
-
-            submitBtn.disabled = false;
-
-            submitBtn.innerHTML =
-                'Create Account <i class="fas fa-check"></i>';
         }
+
+        // All steps valid — let the form submit normally to Django.
     }
 
 
@@ -508,7 +266,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     form.addEventListener(
         'submit',
-        submitForm
+        onSubmit
     );
 
 
@@ -531,28 +289,23 @@ document.addEventListener('DOMContentLoaded', function () {
                     }
 
 
+                    // On the last step, let Enter submit normally.
+
+                    if (currentStep === totalSteps) {
+                        return;
+                    }
+
+
                     e.preventDefault();
 
-
-                    if (
-                        currentStep === totalSteps
-                    ) {
-
-                        form.dispatchEvent(
-                            new Event('submit')
-                        );
-
-                    } else {
-
-                        nextStep();
-                    }
+                    nextStep();
                 }
             );
         });
 
 
     // ========================================
-    // Password Match - Real Time
+    // Password Match — Real Time
     // ========================================
 
     const confirmPassword =

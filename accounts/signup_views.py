@@ -1,6 +1,6 @@
 import json
 
-from django.contrib.auth import get_user_model
+from django.contrib.auth import get_user_model, login as auth_login
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.views.decorators.csrf import csrf_exempt
@@ -11,12 +11,104 @@ from rest_framework_simplejwt.tokens import RefreshToken
 User = get_user_model()
 
 
+def build_form_context(values, errors):
+    """Builds a plain dict shaped so the existing template's
+    {{ form.username.value }} / {% for error in form.username.errors %}
+    syntax keeps working (Django templates do dict-key lookup on dots
+    too), without needing a Form class.
+    """
+
+    values = values or {}
+    errors = errors or {}
+
+    field_names = [
+        "username", "email", "password", "confirmPassword",
+        "fullName", "age", "gender", "city", "bio"
+    ]
+
+    form = {}
+
+    for field_name in field_names:
+        field_value = values.get(field_name, "")
+        field_error = errors.get(field_name)
+        form[field_name] = {
+            "value": field_value,
+            "errors": [field_error] if field_error else []
+        }
+
+    form["non_field_errors"] = (
+        [errors["__all__"]] if "__all__" in errors else []
+    )
+
+    return form
+
+
 def signup_page(request):
 
     if request.user.is_authenticated:
         return redirect("/dashboard/")
 
-    return render(request, "templates/signup.html")
+    errors = {}
+    form_values = {}
+
+    if request.method == "POST":
+
+        username = request.POST.get("username", "").strip()
+        email = request.POST.get("email", "").strip()
+        password1 = request.POST.get("password", "")
+        password2 = request.POST.get("confirmPassword", "")
+        full_name = request.POST.get("fullName", "").strip()
+        age = request.POST.get("age", "")
+        gender = request.POST.get("gender", "")
+        city = request.POST.get("city", "") or None
+        bio = request.POST.get("bio", "").strip()
+
+        # Keep whatever the user typed so the form doesn't clear on error
+        # (password fields intentionally excluded — never re-fill those)
+        form_values = {
+            "username": username,
+            "email": email,
+            "fullName": full_name,
+            "age": age,
+            "gender": gender,
+            "city": city,
+            "bio": bio,
+        }
+
+        errors = get_signup_errors(
+            username=username,
+            email=email,
+            password1=password1,
+            password2=password2,
+            full_name=full_name,
+            age=age,
+            gender=gender
+        )
+
+        if not errors:
+
+            try:
+                age_int = int(age)
+
+                new_user = User.objects.create_user(
+                    username=username,
+                    email=email,
+                    password=password1,
+                    name=full_name,
+                    age=age_int,
+                    gender=gender
+                )
+
+            except Exception:
+                errors["__all__"] = "Error creating account. Please try again."
+
+            else:
+                auth_login(request, new_user)
+                return redirect("/dashboard/")
+
+    form = build_form_context(form_values, errors)
+
+    return render(request, "templates/signup.html", {"form": form})
 
 
 @csrf_exempt
@@ -177,7 +269,7 @@ def get_signup_errors(
         )
 
     elif password1 != password2:
-        errors["password2"] = "Passwords must be the same"
+        errors["confirmPassword"] = "Passwords must be the same"
 
 
     # Full name

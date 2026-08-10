@@ -24,4 +24,6 @@ urlpatterns = [
     path("", views.main_page, name="main"),
     path("accounts/", include("accounts.urls")),
     path("api/", include("accounts.urls")),
+    path("dashboard/", views.dashboard_page, name="dashboard"),
+    path("profile/", include("profiles.urls"))
 ]

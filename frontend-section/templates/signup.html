@@ -46,22 +46,40 @@
                     </p>
                 </div>
 
+                <!-- ====== GENERAL / NON-FIELD ERRORS ====== -->
+                {% if form.non_field_errors %}
+                    <div class="signup__message signup__message--error" style="display: block;">
+                        {% for error in form.non_field_errors %}
+                            {{ error }}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
                 <!-- ====== FORM ====== -->
-                <form id="signupForm" class="signup__form">
-                    
+                <form id="signupForm" class="signup__form" method="post">
+                    {% csrf_token %}
+
                     <!-- ====== STEP 1: Account Info ====== -->
                     <div class="signup__step signup__step--active" data-step="1">
                         <h3 class="signup__step-title">Account Details</h3>
 
                         <div class="form-group">
                             <label for="username">Username</label>
-                            <input type="text" id="username" name="username" placeholder="john_doe" required />
+                            <input type="text" id="username" name="username" placeholder="john_doe"
+                                   value="{{ form.username.value|default:'' }}" required />
                             <small class="form-hint">Choose a unique username</small>
+                            {% for error in form.username.errors %}
+                                <div class="text-danger">{{ error }}</div>
+                            {% endfor %}
                         </div>
 
                         <div class="form-group">
                             <label for="email">Email Address</label>
-                            <input type="email" id="email" name="email" placeholder="john@example.com" required />
+                            <input type="email" id="email" name="email" placeholder="john@example.com"
+                                   value="{{ form.email.value|default:'' }}" required />
+                            {% for error in form.email.errors %}
+                                <div class="text-danger">{{ error }}</div>
+                            {% endfor %}
                         </div>
 
                         <div class="form-row">
@@ -69,10 +87,16 @@
                                 <label for="password">Password</label>
                                 <input type="password" id="password" name="password" placeholder="••••••••" required />
                                 <small class="form-hint">Minimum 6 characters</small>
+                                {% for error in form.password.errors %}
+                                    <div class="text-danger">{{ error }}</div>
+                                {% endfor %}
                             </div>
                             <div class="form-group">
                                 <label for="confirmPassword">Confirm Password</label>
                                 <input type="password" id="confirmPassword" name="confirmPassword" placeholder="••••••••" required />
+                                {% for error in form.confirmPassword.errors %}
+                                    <div class="text-danger">{{ error }}</div>
+                                {% endfor %}
                             </div>
                         </div>
                     </div>
@@ -83,22 +107,33 @@
 
                         <div class="form-group">
                             <label for="fullName">Full Name</label>
-                            <input type="text" id="fullName" name="fullName" placeholder="John Doe" required />
+                            <input type="text" id="fullName" name="fullName" placeholder="John Doe"
+                                   value="{{ form.fullName.value|default:'' }}" required />
+                            {% for error in form.fullName.errors %}
+                                <div class="text-danger">{{ error }}</div>
+                            {% endfor %}
                         </div>
 
                         <div class="form-row">
                             <div class="form-group">
                                 <label for="age">Age</label>
-                                <input type="number" id="age" name="age" placeholder="25" min="18" max="99" required />
+                                <input type="number" id="age" name="age" placeholder="25" min="18" max="99"
+                                       value="{{ form.age.value|default:'' }}" required />
+                                {% for error in form.age.errors %}
+                                    <div class="text-danger">{{ error }}</div>
+                                {% endfor %}
                             </div>
                             <div class="form-group">
                                 <label for="gender">Gender</label>
                                 <select id="gender" name="gender" required>
                                     <option value="">Select...</option>
-                                    <option value="male">Male</option>
-                                    <option value="female">Female</option>
-                                    <option value="other">Other</option>
+                                    <option value="male" {% if form.gender.value == "male" %}selected{% endif %}>Male</option>
+                                    <option value="female" {% if form.gender.value == "female" %}selected{% endif %}>Female</option>
+                                    <option value="other" {% if form.gender.value == "other" %}selected{% endif %}>Other</option>
                                 </select>
+                                {% for error in form.gender.errors %}
+                                    <div class="text-danger">{{ error }}</div>
+                                {% endfor %}
                             </div>
                         </div>
 
@@ -106,17 +141,23 @@
                             <label for="city">City</label>
                             <select id="city" name="city">
                                 <option value="">Select your city</option>
-                                <option value="1">Berlin</option>
-                                <option value="2">Hamburg</option>
-                                <option value="3">Munich</option>
-                                <option value="4">Cologne</option>
-                                <option value="5">Frankfurt</option>
+                                <option value="1" {% if form.city.value == "1" %}selected{% endif %}>Berlin</option>
+                                <option value="2" {% if form.city.value == "2" %}selected{% endif %}>Hamburg</option>
+                                <option value="3" {% if form.city.value == "3" %}selected{% endif %}>Munich</option>
+                                <option value="4" {% if form.city.value == "4" %}selected{% endif %}>Cologne</option>
+                                <option value="5" {% if form.city.value == "5" %}selected{% endif %}>Frankfurt</option>
                             </select>
+                            {% for error in form.city.errors %}
+                                <div class="text-danger">{{ error }}</div>
+                            {% endfor %}
                         </div>
 
                         <div class="form-group">
                             <label for="bio">Bio</label>
-                            <textarea id="bio" name="bio" rows="3" placeholder="Tell us about yourself..."></textarea>
+                            <textarea id="bio" name="bio" rows="3" placeholder="Tell us about yourself...">{{ form.bio.value|default:'' }}</textarea>
+                            {% for error in form.bio.errors %}
+                                <div class="text-danger">{{ error }}</div>
+                            {% endfor %}
                         </div>
                     </div>
 
@@ -133,9 +174,6 @@
                             Create Account <i class="fas fa-check"></i>
                         </button>
                     </div>
-
-                    <!-- ====== MESSAGES ====== -->
-                    <div id="formMessage" class="signup__message" style="display: none;"></div>
                 </form>
 
                 <div class="signup__footer">
@@ -155,7 +193,7 @@
         </div>
     </footer>
 
-    <!-- JavaScript -->
+    <!-- JavaScript (step navigation UI only — no longer handles submission) -->
     <script src="{% static 'js/main.js' %}"></script>
     <script src="{% static 'js/signup.js' %}"></script>
 </body>

@@ -4,15 +4,37 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render, redirect
 from rest_framework_simplejwt.tokens import RefreshToken
+from django.contrib.auth.forms import AuthenticationForm
 
 
 
 def login_page(request):
-
+ 
     if request.user.is_authenticated:
         return redirect("/dashboard/")
+ 
+    if request.method == "POST":
+ 
+        form = AuthenticationForm(request, data=request.POST)
+ 
+        if form.is_valid():
+ 
+            user = form.get_user()
+ 
+            login(request, user)
+ 
+            return redirect("/dashboard/")
+ 
+        # form.is_valid() is False here — form.non_field_errors will
+        # contain "Please enter a correct username and password" etc,
+        # which login.html already knows how to display.
+ 
+    else:
+ 
+        form = AuthenticationForm()
+ 
+    return render(request, "templates/login.html", {"form": form})
 
-    return render(request, "templates/login.html")
 
 
 
