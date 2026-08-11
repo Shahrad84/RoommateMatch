@@ -1,251 +1,259 @@
-{% comment %} {% extends "base.html" %} {% endcomment %}
 {% load static %}
 
-{% block title %}
-Dashboard | RoommateMatch
-{% endblock %}
-
-{% block extra_css %}
-
-<link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
-{% endblock %}
-
-{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | RoommateMatch</title>
+    <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
 
 <main class="dashboard">
 
-```
-<div class="container dashboard__container">
+    <div class="container dashboard__container">
 
-    <!-- ==============================
-         WELCOME
-    =============================== -->
+        <!-- ==============================
+             WELCOME
+        =============================== -->
 
-    <section class="dashboard__welcome">
+        <section class="dashboard__welcome">
 
-        <div class="dashboard__welcome-content">
+            <div class="dashboard__welcome-content">
 
-            <span class="dashboard__badge">
-                Your Dashboard
-            </span>
-
-            <h1 class="dashboard__title">
-                Welcome, {{ user.name|default:user.username }} 👋
-            </h1>
-
-            <p class="dashboard__subtitle">
-                Find a roommate who matches your lifestyle.
-            </p>
-
-        </div>
-
-    </section>
-
-
-    <!-- ==============================
-         PROFILE COMPLETION
-    =============================== -->
-
-    <section class="profile-completion">
-
-        <div class="profile-completion__header">
-
-            <div>
-
-                <span class="profile-completion__label">
-                    Profile completion
+                <span class="dashboard__badge">
+                    Your Dashboard
                 </span>
 
-                <h2 class="profile-completion__percentage">
-                    60%
+                <h1 class="dashboard__title">
+                    Welcome, {{ user.username }} 👋
+                </h1>
+
+                <p class="dashboard__subtitle">
+                    Find a roommate who matches your lifestyle.
+                </p>
+
+            </div>
+
+        </section>
+
+
+        <!-- ==============================
+             PROFILE COMPLETION STATUS
+        =============================== -->
+
+        {% if profile_complete %}
+
+            <!-- PROFILE COMPLETE -->
+            <section class="profile-completion profile-completion--complete">
+
+                <div class="profile-completion__header">
+
+                    <div>
+                        <span class="profile-completion__label">
+                            Profile Status
+                        </span>
+                        <h2 class="profile-completion__percentage">
+                            100%
+                        </h2>
+                    </div>
+
+                    <div class="profile-completion__icon">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+
+                </div>
+
+                <div class="profile-progress">
+                    <div class="profile-progress__bar" style="width: 100%;"></div>
+                </div>
+
+                <div class="profile-completion__body">
+                    <div>
+                        <h3>✅ Your profile is complete!</h3>
+                        <p>You're all set! Start exploring and find your perfect roommate.</p>
+                    </div>
+                </div>
+
+            </section>
+
+        {% else %}
+
+            <!-- PROFILE INCOMPLETE -->
+            <section class="profile-completion profile-completion--incomplete">
+
+                <div class="profile-completion__header">
+
+                    <div>
+                        <span class="profile-completion__label">
+                            Profile Status
+                        </span>
+                        <h2 class="profile-completion__percentage">
+                            0%
+                        </h2>
+                    </div>
+
+                    <div class="profile-completion__icon">
+                        <i class="fas fa-user-edit"></i>
+                    </div>
+
+                </div>
+
+                <div class="profile-progress">
+                    <div class="profile-progress__bar" style="width: 0%;"></div>
+                </div>
+
+                <div class="profile-completion__body">
+                    <div>
+                        <h3>⚠️ Your profile is incomplete</h3>
+                        <p>Complete your profile to unlock all features and find compatible roommates.</p>
+                    </div>
+
+                    <a href="/profile/complete/" class="btn btn--primary">
+                        Complete Profile
+                        <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+
+            </section>
+
+        {% endif %}
+
+
+        <!-- ==============================
+             FEATURES SECTION
+        =============================== -->
+
+        <section class="dashboard-features">
+
+            <div class="section-header section-header--left">
+
+                <span class="section-header__tag">
+                    Explore
+                </span>
+
+                <h2 class="section-header__title">
+                    What would you like to do?
                 </h2>
 
-            </div>
-
-            <div class="profile-completion__icon">
-                <i class="fas fa-user-edit"></i>
-            </div>
-
-        </div>
-
-
-        <div class="profile-progress">
-
-            <div
-                class="profile-progress__bar"
-                style="width: 60%;">
-            </div>
-
-        </div>
-
-
-        <div class="profile-completion__body">
-
-            <div>
-
-                <h3>
-                    Your profile is incomplete
-                </h3>
-
-                <p>
-                    Complete it to unlock matching and find compatible roommates.
+                <p class="section-header__subtitle">
+                    {% if profile_complete %}
+                        All features are unlocked. Start finding your perfect roommate!
+                    {% else %}
+                        Complete your profile to unlock all features below.
+                    {% endif %}
                 </p>
 
             </div>
 
 
-            <a
-                href="/profile/complete/"
-                class="btn btn--primary">
+            <div class="dashboard-features__grid">
 
-                Complete Profile
+                <!-- Find Roommates -->
+                {% if profile_complete %}
+                    <a href="#" class="dashboard-feature">
+                {% else %}
+                    <div class="dashboard-feature dashboard-feature--locked">
+                {% endif %}
+                    <div class="dashboard-feature__icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="dashboard-feature__content">
+                        <h3>Find Roommates</h3>
+                        <p>Discover people who match your lifestyle and preferences.</p>
+                    </div>
+                    {% if profile_complete %}
+                        <i class="fas fa-arrow-right dashboard-feature__arrow"></i>
+                    {% else %}
+                        <i class="fas fa-lock dashboard-feature__lock"></i>
+                    {% endif %}
+                {% if profile_complete %}
+                    </a>
+                {% else %}
+                    </div>
+                {% endif %}
 
-                <i class="fas fa-arrow-right"></i>
+                <!-- My Matches -->
+                {% if profile_complete %}
+                    <a href="#" class="dashboard-feature">
+                {% else %}
+                    <div class="dashboard-feature dashboard-feature--locked">
+                {% endif %}
+                    <div class="dashboard-feature__icon">
+                        <i class="fas fa-heart"></i>
+                    </div>
+                    <div class="dashboard-feature__content">
+                        <h3>My Matches</h3>
+                        <p>See your compatible roommates and manage your matches.</p>
+                    </div>
+                    {% if profile_complete %}
+                        <i class="fas fa-arrow-right dashboard-feature__arrow"></i>
+                    {% else %}
+                        <i class="fas fa-lock dashboard-feature__lock"></i>
+                    {% endif %}
+                {% if profile_complete %}
+                    </a>
+                {% else %}
+                    </div>
+                {% endif %}
 
-            </a>
+                <!-- Messages -->
+                {% if profile_complete %}
+                    <a href="#" class="dashboard-feature">
+                {% else %}
+                    <div class="dashboard-feature dashboard-feature--locked">
+                {% endif %}
+                    <div class="dashboard-feature__icon">
+                        <i class="fas fa-comments"></i>
+                    </div>
+                    <div class="dashboard-feature__content">
+                        <h3>Messages</h3>
+                        <p>Connect and chat with people you've matched with.</p>
+                    </div>
+                    {% if profile_complete %}
+                        <i class="fas fa-arrow-right dashboard-feature__arrow"></i>
+                    {% else %}
+                        <i class="fas fa-lock dashboard-feature__lock"></i>
+                    {% endif %}
+                {% if profile_complete %}
+                    </a>
+                {% else %}
+                    </div>
+                {% endif %}
 
-        </div>
+                <!-- My Listings -->
+                {% if profile_complete %}
+                    <a href="#" class="dashboard-feature">
+                {% else %}
+                    <div class="dashboard-feature dashboard-feature--locked">
+                {% endif %}
+                    <div class="dashboard-feature__icon">
+                        <i class="fas fa-home"></i>
+                    </div>
+                    <div class="dashboard-feature__content">
+                        <h3>My Listings</h3>
+                        <p>Create and manage your available rooms or listings.</p>
+                    </div>
+                    {% if profile_complete %}
+                        <i class="fas fa-arrow-right dashboard-feature__arrow"></i>
+                    {% else %}
+                        <i class="fas fa-lock dashboard-feature__lock"></i>
+                    {% endif %}
+                {% if profile_complete %}
+                    </a>
+                {% else %}
+                    </div>
+                {% endif %}
 
-    </section>
+            </div>
 
+        </section>
 
-    <!-- ==============================
-         MAIN FEATURES
-    =============================== -->
-
-    <section class="dashboard-features">
-
-        <div class="section-header section-header--left">
-
-            <span class="section-header__tag">
-                Explore
-            </span>
-
-            <h2 class="section-header__title">
-                What would you like to do?
-            </h2>
-
-            <p class="section-header__subtitle">
-                Explore RoommateMatch and find the right place and people for you.
-            </p>
-
-        </div>
-
-
-        <div class="dashboard-features__grid">
-
-
-            <!-- Find Roommates -->
-
-            <a href="#" class="dashboard-feature">
-
-                <div class="dashboard-feature__icon">
-                    <i class="fas fa-users"></i>
-                </div>
-
-                <div class="dashboard-feature__content">
-
-                    <h3>
-                        Find Roommates
-                    </h3>
-
-                    <p>
-                        Discover people who match your lifestyle and preferences.
-                    </p>
-
-                </div>
-
-                <i class="fas fa-arrow-right dashboard-feature__arrow"></i>
-
-            </a>
-
-
-
-            <!-- My Matches -->
-
-            <a href="#" class="dashboard-feature">
-
-                <div class="dashboard-feature__icon">
-                    <i class="fas fa-heart"></i>
-                </div>
-
-                <div class="dashboard-feature__content">
-
-                    <h3>
-                        My Matches
-                    </h3>
-
-                    <p>
-                        See your compatible roommates and manage your matches.
-                    </p>
-
-                </div>
-
-                <i class="fas fa-arrow-right dashboard-feature__arrow"></i>
-
-            </a>
-
-
-
-            <!-- Messages -->
-
-            <a href="#" class="dashboard-feature">
-
-                <div class="dashboard-feature__icon">
-                    <i class="fas fa-comments"></i>
-                </div>
-
-                <div class="dashboard-feature__content">
-
-                    <h3>
-                        Messages
-                    </h3>
-
-                    <p>
-                        Connect and chat with people you've matched with.
-                    </p>
-
-                </div>
-
-                <i class="fas fa-arrow-right dashboard-feature__arrow"></i>
-
-            </a>
-
-
-
-            <!-- My Listings -->
-
-            <a href="#" class="dashboard-feature">
-
-                <div class="dashboard-feature__icon">
-                    <i class="fas fa-home"></i>
-                </div>
-
-                <div class="dashboard-feature__content">
-
-                    <h3>
-                        My Listings
-                    </h3>
-
-                    <p>
-                        Create and manage your available rooms or listings.
-                    </p>
-
-                </div>
-
-                <i class="fas fa-arrow-right dashboard-feature__arrow"></i>
-
-            </a>
-
-
-        </div>
-
-    </section>
-
-
-</div>
-```
+    </div>
 
 </main>
 
-{% endblock %}
+</body>
+</html>

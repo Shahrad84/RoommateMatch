@@ -1,1057 +1,583 @@
 {% load static %}
 
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Complete Profile | RoommateMatch</title>
-
-<link rel="stylesheet" href="{% static 'css/profile_complete.css' %}">
-<link rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-
+    <title>Complete Profile | RoommateMatch</title>
+    <link rel="stylesheet" href="{% static 'css/profile_complete.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
-
 <body>
 
 <main class="profile-page">
 
-<div class="profile-container">
+    <div class="profile-container">
 
-    <!-- ==============================
-         HEADER
-    =============================== -->
-    <header class="profile-header">
+        <!-- ==============================
+             HEADER
+        =============================== -->
+        <header class="profile-header">
+            <div class="profile-header__icon">
+                <i class="fas fa-user-circle"></i>
+            </div>
+            <h1>Complete Your Profile</h1>
+            <p>Tell us a little about yourself so we can find better roommates for you.</p>
+        </header>
 
-        <div class="profile-header__icon">
-            <i class="fas fa-user-circle"></i>
+
+        <!-- ==============================
+             PROGRESS
+        =============================== -->
+        <div class="profile-progress">
+            <div class="progress-step progress-step--active">
+                <span>1</span>
+                <p>About You</p>
+            </div>
+            <div class="progress-line"></div>
+            <div class="progress-step">
+                <span>2</span>
+                <p>Lifestyle</p>
+            </div>
+            <div class="progress-line"></div>
+            <div class="progress-step">
+                <span>3</span>
+                <p>Preferences</p>
+            </div>
         </div>
 
-        <h1>Complete Your Profile</h1>
 
-        <p>
-            Tell us a little about yourself so we can find better roommates for you.
-        </p>
+        <!-- ==============================
+             MESSAGES
+        =============================== -->
+        {% if messages %}
+            {% for message in messages %}
+                <div class="form-message form-message--{{ message.tags }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
 
-    </header>
+
+        <!-- ==============================
+             FORM
+        =============================== -->
+        <form id="profileForm" method="POST" action="">
+            {% csrf_token %}
 
 
-    <!-- ==============================
-         PROGRESS
-    =============================== -->
-    <div class="profile-progress">
+            <!-- =====================================
+                 STEP 1 - ABOUT YOU
+            ====================================== -->
+            <section class="profile-step profile-step--active" data-step="1">
+                <div class="step-header">
+                    <span class="step-header__number">01</span>
+                    <div>
+                        <h2>About You</h2>
+                        <p>Let's start with some basic information.</p>
+                    </div>
+                </div>
 
-        <div class="progress-step progress-step--active">
-            <span>1</span>
-            <p>About You</p>
-        </div>
+                <!-- Birth Date -->
+                <div class="form-group">
+                    <label for="id_birthdate">Birth Date</label>
+                    {{ profile_form.birthdate }}
+                    {% if profile_form.birthdate.errors %}
+                        <div class="field-error">
+                            {% for error in profile_form.birthdate.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
 
-        <div class="progress-line"></div>
+                <!-- Job -->
+                <div class="form-group">
+                    <label for="id_job">Job / Occupation</label>
+                    {{ profile_form.job }}
+                    {% if profile_form.job.errors %}
+                        <div class="field-error">
+                            {% for error in profile_form.job.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
 
-        <div class="progress-step">
-            <span>2</span>
-            <p>Lifestyle</p>
-        </div>
+                <!-- Bio -->
+                <div class="form-group">
+                    <label for="id_bio">
+                        About You
+                        <span class="optional">(Optional)</span>
+                    </label>
+                    {{ profile_form.bio }}
+                    {% if profile_form.bio.errors %}
+                        <div class="field-error">
+                            {% for error in profile_form.bio.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                    <small>Maximum 200 characters</small>
+                </div>
 
-        <div class="progress-line"></div>
+                <div class="step-actions step-actions--right">
+                    <button type="button" class="btn btn--primary" data-next>
+                        Continue
+                        <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+            </section>
 
-        <div class="progress-step">
-            <span>3</span>
-            <p>Preferences</p>
-        </div>
+
+            <!-- =====================================
+                 STEP 2 - LIFESTYLE
+            ====================================== -->
+            <section class="profile-step" data-step="2">
+                <div class="step-header">
+                    <span class="step-header__number">02</span>
+                    <div>
+                        <h2>Your Lifestyle</h2>
+                        <p>Tell us how you normally live.</p>
+                    </div>
+                </div>
+
+                <!-- Cleaning Frequency -->
+                <div class="form-group">
+                    <label for="id_cleaning_frequency">How often do you clean?</label>
+                    {{ lifestyle_form.cleaning_frequency }}
+                    {% if lifestyle_form.cleaning_frequency.errors %}
+                        <div class="field-error">
+                            {% for error in lifestyle_form.cleaning_frequency.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Noise Generating Level -->
+                <div class="form-group">
+                    <label for="id_noise_generating_level">How much noise do you usually make?</label>
+                    {{ lifestyle_form.noise_generating_level }}
+                    {% if lifestyle_form.noise_generating_level.errors %}
+                        <div class="field-error">
+                            {% for error in lifestyle_form.noise_generating_level.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Noise Tolerance -->
+                <div class="form-group">
+                    <label for="id_noise_tolerance">How tolerant are you of noise?</label>
+                    {{ lifestyle_form.noise_tolerance }}
+                    {% if lifestyle_form.noise_tolerance.errors %}
+                        <div class="field-error">
+                            {% for error in lifestyle_form.noise_tolerance.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Social Level -->
+                <div class="form-group">
+                    <label for="id_social_level">How social are you? (1-10)</label>
+                    {{ lifestyle_form.social_level }}
+                    {% if lifestyle_form.social_level.errors %}
+                        <div class="field-error">
+                            {% for error in lifestyle_form.social_level.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Smoking -->
+                <div class="form-group">
+                    <label>Do you smoke?</label>
+                    <div class="radio-group">
+                        {% for radio in lifestyle_form.smoking %}
+                            <label class="radio-option">
+                                {{ radio.tag }}
+                                <span>{{ radio.choice_label }}</span>
+                            </label>
+                        {% endfor %}
+                    </div>
+                    {% if lifestyle_form.smoking.errors %}
+                        <div class="field-error">
+                            {% for error in lifestyle_form.smoking.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Has Pets -->
+                <div class="form-group">
+                    <label>Do you have pets?</label>
+                    <div class="radio-group">
+                        {% for radio in lifestyle_form.has_pets %}
+                            <label class="radio-option">
+                                {{ radio.tag }}
+                                <span>{{ radio.choice_label }}</span>
+                            </label>
+                        {% endfor %}
+                    </div>
+                    {% if lifestyle_form.has_pets.errors %}
+                        <div class="field-error">
+                            {% for error in lifestyle_form.has_pets.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Cooking -->
+                <div class="form-group">
+                    <label for="id_cooking">How often do you cook?</label>
+                    {{ lifestyle_form.cooking }}
+                    {% if lifestyle_form.cooking.errors %}
+                        <div class="field-error">
+                            {% for error in lifestyle_form.cooking.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Eating at Home -->
+                <div class="form-group">
+                    <label for="id_eating_at_home">How often do you eat at home?</label>
+                    {{ lifestyle_form.eating_at_home }}
+                    {% if lifestyle_form.eating_at_home.errors %}
+                        <div class="field-error">
+                            {% for error in lifestyle_form.eating_at_home.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Wake Up -->
+                <div class="form-group">
+                    <label for="id_wake_up">What time do you usually wake up?</label>
+                    {{ lifestyle_form.wake_up }}
+                    {% if lifestyle_form.wake_up.errors %}
+                        <div class="field-error">
+                            {% for error in lifestyle_form.wake_up.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Sleep -->
+                <div class="form-group">
+                    <label for="id_sleep">What time do you usually go to sleep?</label>
+                    {{ lifestyle_form.sleep }}
+                    {% if lifestyle_form.sleep.errors %}
+                        <div class="field-error">
+                            {% for error in lifestyle_form.sleep.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Guests -->
+                <div class="form-group">
+                    <label for="id_guests">How often do you have guests?</label>
+                    {{ lifestyle_form.guests }}
+                    {% if lifestyle_form.guests.errors %}
+                        <div class="field-error">
+                            {% for error in lifestyle_form.guests.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Overnight Guests -->
+                <div class="form-group">
+                    <label for="id_overnight_guests">How often do you have overnight guests?</label>
+                    {{ lifestyle_form.overnight_guests }}
+                    {% if lifestyle_form.overnight_guests.errors %}
+                        <div class="field-error">
+                            {% for error in lifestyle_form.overnight_guests.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="step-actions">
+                    <button type="button" class="btn btn--outline" data-prev>
+                        <i class="fas fa-arrow-left"></i>
+                        Back
+                    </button>
+                    <button type="button" class="btn btn--primary" data-next>
+                        Continue
+                        <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+            </section>
+
+
+            <!-- =====================================
+                 STEP 3 - PREFERENCES
+            ====================================== -->
+            <section class="profile-step" data-step="3">
+                <div class="step-header">
+                    <span class="step-header__number">03</span>
+                    <div>
+                        <h2>Your Preferences</h2>
+                        <p>How important are these things to you?</p>
+                    </div>
+                </div>
+
+                <!-- Cleanliness Weight -->
+                <div class="form-group">
+                    <label for="id_cleanliness_weight">Cleanliness importance (1-10)</label>
+                    {{ preference_form.cleanliness_weight }}
+                    {% if preference_form.cleanliness_weight.errors %}
+                        <div class="field-error">
+                            {% for error in preference_form.cleanliness_weight.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Noise Weight -->
+                <div class="form-group">
+                    <label for="id_noise_weight">Noise importance (1-10)</label>
+                    {{ preference_form.noise_weight }}
+                    {% if preference_form.noise_weight.errors %}
+                        <div class="field-error">
+                            {% for error in preference_form.noise_weight.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Social Weight -->
+                <div class="form-group">
+                    <label for="id_social_weight">Social compatibility importance (1-10)</label>
+                    {{ preference_form.social_weight }}
+                    {% if preference_form.social_weight.errors %}
+                        <div class="field-error">
+                            {% for error in preference_form.social_weight.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Pets Weight -->
+                <div class="form-group">
+                    <label for="id_pets_weight">Pet compatibility importance (1-10)</label>
+                    {{ preference_form.pets_weight }}
+                    {% if preference_form.pets_weight.errors %}
+                        <div class="field-error">
+                            {% for error in preference_form.pets_weight.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Cooking Weight -->
+                <div class="form-group">
+                    <label for="id_cooking_weight">Cooking compatibility importance (1-10)</label>
+                    {{ preference_form.cooking_weight }}
+                    {% if preference_form.cooking_weight.errors %}
+                        <div class="field-error">
+                            {% for error in preference_form.cooking_weight.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Guests Weight -->
+                <div class="form-group">
+                    <label for="id_guests_weight">Guests compatibility importance (1-10)</label>
+                    {{ preference_form.guests_weight }}
+                    {% if preference_form.guests_weight.errors %}
+                        <div class="field-error">
+                            {% for error in preference_form.guests_weight.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Sleep Schedule Weight -->
+                <div class="form-group">
+                    <label for="id_sleep_schedule_weight">Sleep schedule importance (1-10)</label>
+                    {{ preference_form.sleep_schedule_weight }}
+                    {% if preference_form.sleep_schedule_weight.errors %}
+                        <div class="field-error">
+                            {% for error in preference_form.sleep_schedule_weight.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Accept Smokers -->
+                <div class="form-group">
+                    <label>Are you comfortable living with smokers?</label>
+                    <div class="radio-group">
+                        {% for radio in preference_form.accepts_smokers %}
+                            <label class="radio-option">
+                                {{ radio.tag }}
+                                <span>{{ radio.choice_label }}</span>
+                            </label>
+                        {% endfor %}
+                    </div>
+                    {% if preference_form.accepts_smokers.errors %}
+                        <div class="field-error">
+                            {% for error in preference_form.accepts_smokers.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Accept Pets -->
+                <div class="form-group">
+                    <label>Are you comfortable living with pets?</label>
+                    <div class="radio-group">
+                        {% for radio in preference_form.accepts_pets %}
+                            <label class="radio-option">
+                                {{ radio.tag }}
+                                <span>{{ radio.choice_label }}</span>
+                            </label>
+                        {% endfor %}
+                    </div>
+                    {% if preference_form.accepts_pets.errors %}
+                        <div class="field-error">
+                            {% for error in preference_form.accepts_pets.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Final Actions -->
+                <div class="step-actions">
+                    <button type="button" class="btn btn--outline" data-prev>
+                        <i class="fas fa-arrow-left"></i>
+                        Back
+                    </button>
+                    <button type="submit" class="btn btn--primary">
+                        Complete Profile
+                        <i class="fas fa-check"></i>
+                    </button>
+                </div>
+            </section>
+
+        </form>
 
     </div>
 
-
-    <!-- ==============================
-         MESSAGE
-    =============================== -->
-    {% if profile_form.non_field_errors or lifestyle_form.non_field_errors or preference_form.non_field_errors %}
-        <div id="formMessage" class="form-message form-message--error" style="display: block;">
-            {% for error in profile_form.non_field_errors %}
-                {{ error }}
-            {% endfor %}
-            {% for error in lifestyle_form.non_field_errors %}
-                {{ error }}
-            {% endfor %}
-            {% for error in preference_form.non_field_errors %}
-                {{ error }}
-            {% endfor %}
-        </div>
-    {% else %}
-        <div id="formMessage" class="form-message"></div>
-    {% endif %}
-
-
-    <!-- ==============================
-         FORM
-    =============================== -->
-
-    <form id="profileForm" method="POST" action="/profile/complete/">
-
-        {% csrf_token %}
-
-
-        <!-- =====================================
-             STEP 1 - ABOUT YOU
-        ====================================== -->
-
-        <section class="profile-step profile-step--active"
-                 data-step="1">
-
-            <div class="step-header">
-
-                <span class="step-header__number">01</span>
-
-                <div>
-                    <h2>About You</h2>
-                    <p>Let's start with some basic information.</p>
-                </div>
-
-            </div>
-
-
-            <!-- Birth Date -->
-
-            <div class="form-group">
-
-                <label for="birthdate">
-                    Birth Date
-                </label>
-
-                <input
-                    type="date"
-                    id="birthdate"
-                    name="birthdate"
-                    required
-                    value="{{ profile_form.birthdate.value|default:'' }}"
-                >
-
-                {% for error in profile_form.birthdate.errors %}
-                    <div class="text-danger">{{ error }}</div>
-                {% endfor %}
-
-            </div>
-
-
-            <!-- Job -->
-
-            <div class="form-group">
-
-                <label for="job">
-                    Job / Occupation
-                </label>
-
-                <input
-                    type="text"
-                    id="job"
-                    name="job"
-                    maxlength="20"
-                    placeholder="e.g. Software Developer"
-                    required
-                    value="{{ profile_form.job.value|default:'' }}"
-                >
-
-                {% for error in profile_form.job.errors %}
-                    <div class="text-danger">{{ error }}</div>
-                {% endfor %}
-
-            </div>
-
-
-            <!-- Bio -->
-
-            <div class="form-group">
-
-                <label for="bio">
-                    About You
-                    <span class="optional">(Optional)</span>
-                </label>
-
-                <textarea
-                    id="bio"
-                    name="bio"
-                    maxlength="200"
-                    rows="5"
-                    placeholder="Tell potential roommates a little about yourself..."
-                >{{ profile_form.bio.value|default:'' }}</textarea>
-
-                {% for error in profile_form.bio.errors %}
-                    <div class="text-danger">{{ error }}</div>
-                {% endfor %}
-
-                <small>
-                    Maximum 200 characters
-                </small>
-
-            </div>
-
-
-            <div class="step-actions step-actions--right">
-
-                <button
-                    type="button"
-                    class="btn btn--primary"
-                    data-next
-                >
-                    Continue
-                    <i class="fas fa-arrow-right"></i>
-                </button>
-
-            </div>
-
-        </section>
-
-
-        <!-- =====================================
-             STEP 2 - LIFESTYLE
-        ====================================== -->
-
-        <section class="profile-step"
-                 data-step="2">
-
-            <div class="step-header">
-
-                <span class="step-header__number">02</span>
-
-                <div>
-                    <h2>Your Lifestyle</h2>
-                    <p>Tell us how you normally live.</p>
-                </div>
-
-            </div>
-
-
-            <!-- Cleaning -->
-
-            <div class="form-group">
-
-                <label for="cleaning_frequency">
-                    How often do you clean?
-                </label>
-
-                <select
-                    id="cleaning_frequency"
-                    name="cleaning_frequency"
-                    required
-                >
-                    <option value="">Select an option</option>
-                    <option value="never" {% if lifestyle_form.cleaning_frequency.value == "never" %}selected{% endif %}>Never</option>
-                    <option value="sometimes" {% if lifestyle_form.cleaning_frequency.value == "sometimes" %}selected{% endif %}>Sometimes</option>
-                    <option value="often" {% if lifestyle_form.cleaning_frequency.value == "often" %}selected{% endif %}>Often</option>
-                    <option value="usually" {% if lifestyle_form.cleaning_frequency.value == "usually" %}selected{% endif %}>Usually</option>
-                    <option value="always" {% if lifestyle_form.cleaning_frequency.value == "always" %}selected{% endif %}>Always</option>
-                </select>
-
-                {% for error in lifestyle_form.cleaning_frequency.errors %}
-                    <div class="text-danger">{{ error }}</div>
-                {% endfor %}
-
-            </div>
-
-
-            <!-- Noise generating -->
-
-            <div class="form-group">
-
-                <label for="noise_generating_level">
-                    How much noise do you usually make?
-                </label>
-
-                <select
-                    id="noise_generating_level"
-                    name="noise_generating_level"
-                    required
-                >
-                    <option value="">Select an option</option>
-                    <option value="low" {% if lifestyle_form.noise_generating_level.value == "low" %}selected{% endif %}>Low</option>
-                    <option value="medium" {% if lifestyle_form.noise_generating_level.value == "medium" %}selected{% endif %}>Medium</option>
-                    <option value="high" {% if lifestyle_form.noise_generating_level.value == "high" %}selected{% endif %}>High</option>
-                </select>
-
-                {% for error in lifestyle_form.noise_generating_level.errors %}
-                    <div class="text-danger">{{ error }}</div>
-                {% endfor %}
-
-            </div>
-
-
-            <!-- Noise tolerance -->
-
-            <div class="form-group">
-
-                <label for="noise_tolerance">
-                    How tolerant are you of noise?
-                </label>
-
-                <select
-                    id="noise_tolerance"
-                    name="noise_tolerance"
-                    required
-                >
-                    <option value="">Select an option</option>
-                    <option value="low" {% if lifestyle_form.noise_tolerance.value == "low" %}selected{% endif %}>Low</option>
-                    <option value="medium" {% if lifestyle_form.noise_tolerance.value == "medium" %}selected{% endif %}>Medium</option>
-                    <option value="high" {% if lifestyle_form.noise_tolerance.value == "high" %}selected{% endif %}>High</option>
-                </select>
-
-                {% for error in lifestyle_form.noise_tolerance.errors %}
-                    <div class="text-danger">{{ error }}</div>
-                {% endfor %}
-
-            </div>
-
-
-            <!-- Social Level -->
-
-            <div class="form-group">
-
-                <label for="social_level">
-                    How social are you?
-                </label>
-
-                <div class="range-wrapper">
-
-                    <input
-                        type="range"
-                        id="social_level"
-                        name="social_level"
-                        min="1"
-                        max="10"
-                        value="{{ lifestyle_form.social_level.value|default:5 }}"
-                        required
-                    >
-
-                    <span id="social_levelValue">{{ lifestyle_form.social_level.value|default:5 }}</span>
-
-                </div>
-
-                {% for error in lifestyle_form.social_level.errors %}
-                    <div class="text-danger">{{ error }}</div>
-                {% endfor %}
-
-            </div>
-
-
-            <!-- Smoking -->
-
-            <div class="form-group">
-
-                <label>
-                    Do you smoke?
-                </label>
-
-                <div class="radio-group">
-
-                    <label class="radio-option">
-                        <input
-                            type="radio"
-                            name="smoking"
-                            value="true"
-                            {% if lifestyle_form.smoking.value == True %}checked{% endif %}
-                            required
-                        >
-                        <span>Yes</span>
-                    </label>
-
-                    <label class="radio-option">
-                        <input
-                            type="radio"
-                            name="smoking"
-                            value="false"
-                            {% if lifestyle_form.smoking.value == False %}checked{% endif %}
-                        >
-                        <span>No</span>
-                    </label>
-
-                
-
-                {% for error in lifestyle_form.smoking.errors %}
-                    <div class="text-danger">{{ error }}</div>
-                {% endfor %}
-            </div>
-
-            </div>
-
-
-            <!-- Pets -->
-
-            <div class="form-group">
-
-                <label>
-                    Do you have pets?
-                </label>
-
-                <div class="radio-group">
-
-                    <label class="radio-option">
-                        <input
-                            type="radio"
-                            name="has_pets"
-                            value="true"
-                            {% if lifestyle_form.has_pets.value == True %}checked{% endif %}
-                            required
-                        >
-                        <span>Yes</span>
-                    </label>
-
-                    <label class="radio-option">
-                        <input
-                            type="radio"
-                            name="has_pets"
-                            value="false"
-                            {% if lifestyle_form.has_pets.value == False %}checked{% endif %}
-                        >
-                        <span>No</span>
-                    </label>
-
-                
-
-                {% for error in lifestyle_form.has_pets.errors %}
-                    <div class="text-danger">{{ error }}</div>
-                {% endfor %}
-            </div>
-
-            </div>
-
-
-            <!-- Cooking -->
-
-            <div class="form-group">
-
-                <label for="cooking">
-                    How often do you cook?
-                </label>
-
-                <select
-                    id="cooking"
-                    name="cooking"
-                    required
-                >
-                    <option value="">Select an option</option>
-                    <option value="never" {% if lifestyle_form.cooking.value == "never" %}selected{% endif %}>Never</option>
-                    <option value="sometimes" {% if lifestyle_form.cooking.value == "sometimes" %}selected{% endif %}>Sometimes</option>
-                    <option value="often" {% if lifestyle_form.cooking.value == "often" %}selected{% endif %}>Often</option>
-                    <option value="usually" {% if lifestyle_form.cooking.value == "usually" %}selected{% endif %}>Usually</option>
-                    <option value="always" {% if lifestyle_form.cooking.value == "always" %}selected{% endif %}>Always</option>
-                </select>
-
-                {% for error in lifestyle_form.cooking.errors %}
-                    <div class="text-danger">{{ error }}</div>
-                {% endfor %}
-
-            </div>
-
-
-            <!-- Eating at home -->
-
-            <div class="form-group">
-
-                <label for="eating_at_home">
-                    How often do you eat at home?
-                </label>
-
-                <select
-                    id="eating_at_home"
-                    name="eating_at_home"
-                    required
-                >
-                    <option value="">Select an option</option>
-                    <option value="never" {% if lifestyle_form.eating_at_home.value == "never" %}selected{% endif %}>Never</option>
-                    <option value="sometimes" {% if lifestyle_form.eating_at_home.value == "sometimes" %}selected{% endif %}>Sometimes</option>
-                    <option value="often" {% if lifestyle_form.eating_at_home.value == "often" %}selected{% endif %}>Often</option>
-                    <option value="usually" {% if lifestyle_form.eating_at_home.value == "usually" %}selected{% endif %}>Usually</option>
-                    <option value="always" {% if lifestyle_form.eating_at_home.value == "always" %}selected{% endif %}>Always</option>
-                </select>
-
-                {% for error in lifestyle_form.eating_at_home.errors %}
-                    <div class="text-danger">{{ error }}</div>
-                {% endfor %}
-
-            </div>
-
-
-            <!-- Wake up -->
-
-            <div class="form-group">
-
-                <label for="wake_up">
-                    What time do you usually wake up?
-                </label>
-
-                <input
-                    type="time"
-                    id="wake_up"
-                    name="wake_up"
-                    required
-                    value="{{ lifestyle_form.wake_up.value|default:'' }}"
-                >
-
-                {% for error in lifestyle_form.wake_up.errors %}
-                    <div class="text-danger">{{ error }}</div>
-                {% endfor %}
-
-            </div>
-
-
-            <!-- Sleep -->
-
-            <div class="form-group">
-
-                <label for="sleep">
-                    What time do you usually go to sleep?
-                </label>
-
-                <input
-                    type="time"
-                    id="sleep"
-                    name="sleep"
-                    required
-                    value="{{ lifestyle_form.sleep.value|default:'' }}"
-                >
-
-                {% for error in lifestyle_form.sleep.errors %}
-                    <div class="text-danger">{{ error }}</div>
-                {% endfor %}
-
-            </div>
-
-
-            <!-- Guests -->
-
-            <div class="form-group">
-
-                <label for="guests">
-                    How often do you have guests?
-                </label>
-
-                <select
-                    id="guests"
-                    name="guests"
-                    required
-                >
-                    <option value="">Select an option</option>
-                    <option value="never" {% if lifestyle_form.guests.value == "never" %}selected{% endif %}>Never</option>
-                    <option value="sometimes" {% if lifestyle_form.guests.value == "sometimes" %}selected{% endif %}>Sometimes</option>
-                    <option value="often" {% if lifestyle_form.guests.value == "often" %}selected{% endif %}>Often</option>
-                    <option value="usually" {% if lifestyle_form.guests.value == "usually" %}selected{% endif %}>Usually</option>
-                    <option value="always" {% if lifestyle_form.guests.value == "always" %}selected{% endif %}>Always</option>
-                </select>
-
-                {% for error in lifestyle_form.guests.errors %}
-                    <div class="text-danger">{{ error }}</div>
-                {% endfor %}
-
-            </div>
-
-
-            <!-- Overnight Guests -->
-
-            <div class="form-group">
-
-                <label for="overnight_guests">
-                    How often do you have overnight guests?
-                </label>
-
-                <select
-                    id="overnight_guests"
-                    name="overnight_guests"
-                    required
-                >
-                    <option value="">Select an option</option>
-                    <option value="never" {% if lifestyle_form.overnight_guests.value == "never" %}selected{% endif %}>Never</option>
-                    <option value="sometimes" {% if lifestyle_form.overnight_guests.value == "sometimes" %}selected{% endif %}>Sometimes</option>
-                    <option value="often" {% if lifestyle_form.overnight_guests.value == "often" %}selected{% endif %}>Often</option>
-                    <option value="usually" {% if lifestyle_form.overnight_guests.value == "usually" %}selected{% endif %}>Usually</option>
-                    <option value="always" {% if lifestyle_form.overnight_guests.value == "always" %}selected{% endif %}>Always</option>
-                </select>
-
-                {% for error in lifestyle_form.overnight_guests.errors %}
-                    <div class="text-danger">{{ error }}</div>
-                {% endfor %}
-
-            </div>
-
-
-            <div class="step-actions">
-
-                <button
-                    type="button"
-                    class="btn btn--outline"
-                    data-prev
-                >
-                    <i class="fas fa-arrow-left"></i>
-                    Back
-                </button>
-
-                <button
-                    type="button"
-                    class="btn btn--primary"
-                    data-next
-                >
-                    Continue
-                    <i class="fas fa-arrow-right"></i>
-                </button>
-
-            </div>
-
-        </section>
-
-
-        <!-- =====================================
-             STEP 3 - PREFERENCES
-        ====================================== -->
-
-        <section class="profile-step"
-                 data-step="3">
-
-            <div class="step-header">
-
-                <span class="step-header__number">03</span>
-
-                <div>
-                    <h2>Your Preferences</h2>
-                    <p>How important are these things to you?</p>
-                </div>
-
-            </div>
-
-
-            <!-- Cleanliness -->
-
-            <div class="form-group">
-
-                <label for="cleanliness_weight">
-                    Cleanliness importance
-                </label>
-
-                <div class="range-wrapper">
-
-                    <input
-                        type="range"
-                        id="cleanliness_weight"
-                        name="cleanliness_weight"
-                        min="1"
-                        max="10"
-                        value="{{ preference_form.cleanliness_weight.value|default:5 }}"
-                        required
-                    >
-
-                    <span id="cleanliness_weightValue">{{ preference_form.cleanliness_weight.value|default:5 }}</span>
-
-                </div>
-
-                {% for error in preference_form.cleanliness_weight.errors %}
-                    <div class="text-danger">{{ error }}</div>
-                {% endfor %}
-
-            </div>
-
-
-            <!-- Noise -->
-
-            <div class="form-group">
-
-                <label for="noise_weight">
-                    Noise importance
-                </label>
-
-                <div class="range-wrapper">
-
-                    <input
-                        type="range"
-                        id="noise_weight"
-                        name="noise_weight"
-                        min="1"
-                        max="10"
-                        value="{{ preference_form.noise_weight.value|default:5 }}"
-                        required
-                    >
-
-                    <span id="noise_weightValue">{{ preference_form.noise_weight.value|default:5 }}</span>
-
-                </div>
-
-                {% for error in preference_form.noise_weight.errors %}
-                    <div class="text-danger">{{ error }}</div>
-                {% endfor %}
-
-            </div>
-
-
-            <!-- Social -->
-
-            <div class="form-group">
-
-                <label for="social_weight">
-                    Social compatibility importance
-                </label>
-
-                <div class="range-wrapper">
-
-                    <input
-                        type="range"
-                        id="social_weight"
-                        name="social_weight"
-                        min="1"
-                        max="10"
-                        value="{{ preference_form.social_weight.value|default:5 }}"
-                        required
-                    >
-
-                    <span id="social_weightValue">{{ preference_form.social_weight.value|default:5 }}</span>
-
-                </div>
-
-                {% for error in preference_form.social_weight.errors %}
-                    <div class="text-danger">{{ error }}</div>
-                {% endfor %}
-
-            </div>
-
-
-            <!-- Pets -->
-
-            <div class="form-group">
-
-                <label for="pets_weight">
-                    Pet compatibility importance
-                </label>
-
-                <div class="range-wrapper">
-
-                    <input
-                        type="range"
-                        id="pets_weight"
-                        name="pets_weight"
-                        min="1"
-                        max="10"
-                        value="{{ preference_form.pets_weight.value|default:5 }}"
-                        required
-                    >
-
-                    <span id="pets_weightValue">{{ preference_form.pets_weight.value|default:5 }}</span>
-
-                </div>
-
-                {% for error in preference_form.pets_weight.errors %}
-                    <div class="text-danger">{{ error }}</div>
-                {% endfor %}
-
-            </div>
-
-
-            <!-- Cooking -->
-
-            <div class="form-group">
-
-                <label for="cooking_weight">
-                    Cooking compatibility importance
-                </label>
-
-                <div class="range-wrapper">
-
-                    <input
-                        type="range"
-                        id="cooking_weight"
-                        name="cooking_weight"
-                        min="1"
-                        max="10"
-                        value="{{ preference_form.cooking_weight.value|default:5 }}"
-                        required
-                    >
-
-                    <span id="cooking_weightValue">{{ preference_form.cooking_weight.value|default:5 }}</span>
-
-                </div>
-
-                {% for error in preference_form.cooking_weight.errors %}
-                    <div class="text-danger">{{ error }}</div>
-                {% endfor %}
-
-            </div>
-
-
-            <!-- Guests -->
-
-            <div class="form-group">
-
-                <label for="guests_weight">
-                    Guests compatibility importance
-                </label>
-
-                <div class="range-wrapper">
-
-                    <input
-                        type="range"
-                        id="guests_weight"
-                        name="guests_weight"
-                        min="1"
-                        max="10"
-                        value="{{ preference_form.guests_weight.value|default:5 }}"
-                        required
-                    >
-
-                    <span id="guests_weightValue">{{ preference_form.guests_weight.value|default:5 }}</span>
-
-                </div>
-
-                {% for error in preference_form.guests_weight.errors %}
-                    <div class="text-danger">{{ error }}</div>
-                {% endfor %}
-
-            </div>
-
-
-            <!-- Sleep -->
-
-            <div class="form-group">
-
-                <label for="sleep_schedule_weight">
-                    Sleep schedule importance
-                </label>
-
-                <div class="range-wrapper">
-
-                    <input
-                        type="range"
-                        id="sleep_schedule_weight"
-                        name="sleep_schedule_weight"
-                        min="1"
-                        max="10"
-                        value="{{ preference_form.sleep_schedule_weight.value|default:5 }}"
-                        required
-                    >
-
-                    <span id="sleep_schedule_weightValue">{{ preference_form.sleep_schedule_weight.value|default:5 }}</span>
-
-                </div>
-
-                {% for error in preference_form.sleep_schedule_weight.errors %}
-                    <div class="text-danger">{{ error }}</div>
-                {% endfor %}
-
-            </div>
-
-
-            <!-- Accept Smokers -->
-
-            <div class="form-group">
-
-                <label>
-                    Are you comfortable living with smokers?
-                </label>
-
-                <div class="radio-group">
-
-                    <label class="radio-option">
-                        <input
-                            type="radio"
-                            name="accepts_smokers"
-                            value="true"
-                            {% if preference_form.accepts_smokers.value == True %}checked{% endif %}
-                            required
-                        >
-                        <span>Yes</span>
-                    </label>
-
-                    <label class="radio-option">
-                        <input
-                            type="radio"
-                            name="accepts_smokers"
-                            value="false"
-                            {% if preference_form.accepts_smokers.value == False %}checked{% endif %}
-                        >
-                        <span>No</span>
-                    </label>
-
-                
-
-                {% for error in preference_form.accepts_smokers.errors %}
-                    <div class="text-danger">{{ error }}</div>
-                {% endfor %}
-            </div>
-
-            </div>
-
-
-            <!-- Accept Pets -->
-
-            <div class="form-group">
-
-                <label>
-                    Are you comfortable living with pets?
-                </label>
-
-                <div class="radio-group">
-
-                    <label class="radio-option">
-                        <input
-                            type="radio"
-                            name="accepts_pets"
-                            value="true"
-                            {% if preference_form.accepts_pets.value == True %}checked{% endif %}
-                            required
-                        >
-                        <span>Yes</span>
-                    </label>
-
-                    <label class="radio-option">
-                        <input
-                            type="radio"
-                            name="accepts_pets"
-                            value="false"
-                            {% if preference_form.accepts_pets.value == False %}checked{% endif %}
-                        >
-                        <span>No</span>
-                    </label>
-
-                
-
-                {% for error in preference_form.accepts_pets.errors %}
-                    <div class="text-danger">{{ error }}</div>
-                {% endfor %}
-            </div>
-
-            </div>
-
-
-            <!-- Final Actions -->
-
-            <div class="step-actions">
-
-                <button
-                    type="button"
-                    class="btn btn--outline"
-                    data-prev
-                >
-                    <i class="fas fa-arrow-left"></i>
-                    Back
-                </button>
-
-                <button
-                    type="submit"
-                    class="btn btn--primary"
-                >
-                    Complete Profile
-                    <i class="fas fa-check"></i>
-                </button>
-
-            </div>
-
-        </section>
-
-    </form>
-
-</div>
-
 </main>
 
-<script>
-// ========================================
-// PROFILE COMPLETE - MULTI STEP FORM
-// ========================================
 
+<!-- ========================================
+     JAVASCRIPT - MULTI STEP FORM
+======================================== -->
+<script>
 (function() {
 
-const form = document.getElementById('profileForm');
-const steps = document.querySelectorAll('.profile-step');
-
-let currentStep = 1;
-const totalSteps = steps.length;
-
-
-// UPDATE STEP
-function updateStep(step) {
-    steps.forEach((element, index) => {
-        element.classList.toggle('profile-step--active', index === step - 1);
-    });
-
-    document.querySelectorAll('.progress-step').forEach((element, index) => {
-        element.classList.toggle('progress-step--active', index < step);
-    });
-}
+    const form = document.getElementById('profileForm');
+    const steps = document.querySelectorAll('.profile-step');
+    let currentStep = 1;
+    const totalSteps = steps.length;
 
 
-// NEXT STEP
-function nextStep() {
-    if (currentStep < totalSteps) {
-        currentStep++;
-        updateStep(currentStep);
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+    // Update which step is visible
+    function updateStep(step) {
+        steps.forEach((element, index) => {
+            element.classList.toggle('profile-step--active', index === step - 1);
+        });
+
+        document.querySelectorAll('.progress-step').forEach((element, index) => {
+            element.classList.toggle('progress-step--active', index < step);
+        });
     }
-}
 
 
-// PREVIOUS STEP
-function previousStep() {
-    if (currentStep > 1) {
-        currentStep--;
-        updateStep(currentStep);
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-}
-
-
-// NEXT BUTTONS
-document.querySelectorAll('[data-next]').forEach(button => {
-    button.addEventListener('click', nextStep);
-});
-
-
-// PREVIOUS BUTTONS
-document.querySelectorAll('[data-prev]').forEach(button => {
-    button.addEventListener('click', previousStep);
-});
-
-
-// FORM SUBMIT - just disable button, let it submit normally
-if (form) {
-    form.addEventListener('submit', function() {
-        const submitButton = form.querySelector('button[type="submit"]');
-        if (submitButton) {
-            submitButton.disabled = true;
-            submitButton.innerHTML = 'Saving...';
-        }
-    });
-}
-
-
-// RANGE INPUTS
-document.querySelectorAll('input[type="range"]').forEach(range => {
-    range.addEventListener('input', function() {
-        const valueElement = document.getElementById(this.id + 'Value');
-        if (valueElement) {
-            valueElement.textContent = this.value;
-        }
-    });
-});
-
-
-// ENTER KEY
-document.querySelectorAll('.profile-step input, .profile-step select, .profile-step textarea').forEach(input => {
-    input.addEventListener('keydown', function(event) {
-        if (event.key !== 'Enter') return;
-        if (this.tagName === 'TEXTAREA') return;
-        
-        event.preventDefault();
-        
+    // Next step
+    function nextStep() {
         if (currentStep < totalSteps) {
-            nextStep();
-        } else {
-            form.requestSubmit();
+            currentStep++;
+            updateStep(currentStep);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
+    }
+
+
+    // Previous step
+    function previousStep() {
+        if (currentStep > 1) {
+            currentStep--;
+            updateStep(currentStep);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    }
+
+
+    // Next buttons
+    document.querySelectorAll('[data-next]').forEach(button => {
+        button.addEventListener('click', nextStep);
     });
-});
 
 
-// INITIALIZE
-if (totalSteps > 0) {
-    updateStep(1);
-}
+    // Previous buttons
+    document.querySelectorAll('[data-prev]').forEach(button => {
+        button.addEventListener('click', previousStep);
+    });
+
+
+    // Form submit - disable button to prevent double submission
+    if (form) {
+        form.addEventListener('submit', function() {
+            const submitButton = form.querySelector('button[type="submit"]');
+            if (submitButton) {
+                submitButton.disabled = true;
+                submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+            }
+        });
+    }
+
+
+    // Enter key navigation
+    document.querySelectorAll('.profile-step input, .profile-step select, .profile-step textarea').forEach(input => {
+        input.addEventListener('keydown', function(event) {
+            if (event.key !== 'Enter') return;
+            if (this.tagName === 'TEXTAREA') return;
+
+            event.preventDefault();
+
+            if (currentStep < totalSteps) {
+                nextStep();
+            } else {
+                form.requestSubmit();
+            }
+        });
+    });
+
+
+    // Initialize
+    if (totalSteps > 0) {
+        updateStep(1);
+    }
 
 })();
 </script>
