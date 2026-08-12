@@ -1,0 +1,273 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Account | RoommateMatch</title>
+    <link rel="stylesheet" href="{% static 'css/account_overview.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+
+<main class="account-page">
+
+    <div class="account-container">
+
+        <!-- ==============================
+             BACK BUTTON
+        =============================== -->
+        <a href="{% url 'dashboard' %}" class="back-link">
+            <i class="fas fa-arrow-left"></i>
+            Back to Dashboard
+        </a>
+
+
+        <!-- ==============================
+             PROFILE HEADER
+        =============================== -->
+        <section class="account-header">
+
+            <div class="account-header__avatar">
+                <i class="fas fa-user"></i>
+            </div>
+
+            <div class="account-header__info">
+                <h1>{{ user.username }}</h1>
+                <span class="account-header__badge">Member</span>
+            </div>
+            
+            <a href="/profile/complete/" class="btn btn--outline btn--edit">
+                <i class="fas fa-pen"></i>
+                Edit Profile
+            </a>
+
+        </section>
+
+
+        <!-- ==============================
+             STATS CARDS
+        =============================== -->
+        <section class="account-stats">
+
+            <div class="stat-card">
+                <div class="stat-card__icon stat-card__icon--purple">
+                    <i class="fas fa-heart"></i>
+                </div>
+                <div class="stat-card__info">
+                    <span class="stat-card__number">0</span>
+                    <span class="stat-card__label">Likes</span>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-card__icon stat-card__icon--green">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div class="stat-card__info">
+                    <span class="stat-card__number">0</span>
+                    <span class="stat-card__label">Matches</span>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-card__icon stat-card__icon--blue">
+                    <i class="fas fa-comments"></i>
+                </div>
+                <div class="stat-card__info">
+                    <span class="stat-card__number">0</span>
+                    <span class="stat-card__label">Messages</span>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-card__icon stat-card__icon--orange">
+                    <i class="fas fa-home"></i>
+                </div>
+                <div class="stat-card__info">
+                    <span class="stat-card__number">0</span>
+                    <span class="stat-card__label">Listings</span>
+                </div>
+            </div>
+
+        </section>
+
+
+        <!-- ==============================
+             PROFILE DETAILS
+        =============================== -->
+        <section class="account-details">
+
+            <div class="section-header">
+                <h2>
+                    <i class="fas fa-address-card"></i>
+                    Profile Information
+                </h2>
+            </div>
+
+            <div class="details-grid">
+
+                <div class="detail-item">
+                    <span class="detail-item__label">
+                        <i class="fas fa-user"></i>
+                        Username
+                    </span>
+                    <span class="detail-item__value">{{ user.username }}</span>
+                </div>
+
+                <div class="detail-item">
+                    <span class="detail-item__label">
+                        <i class="fas fa-envelope"></i>
+                        Email
+                    </span>
+                    <span class="detail-item__value">{{ user.email|default:"Not set" }}</span>
+                </div>
+
+                <div class="detail-item">
+                    <span class="detail-item__label">
+                        <i class="fas fa-calendar"></i>
+                        Joined
+                    </span>
+                    <span class="detail-item__value">{{ user.date_joined|date:"F j, Y" }}</span>
+                </div>
+
+                <div class="detail-item">
+                    <span class="detail-item__label">
+                        <i class="fas fa-clock"></i>
+                        Last Login
+                    </span>
+                    <span class="detail-item__value">{{ user.last_login|date:"F j, Y" }}</span>
+                </div>
+
+                {% if profile_complete %}
+                <div class="detail-item">
+                    <span class="detail-item__label">
+                        <i class="fas fa-briefcase"></i>
+                        Job
+                    </span>
+                    <span class="detail-item__value">{{ profile.job|default:"Not set" }}</span>
+                </div>
+
+                <div class="detail-item">
+                    <span class="detail-item__label">
+                        <i class="fas fa-birthday-cake"></i>
+                        Birth Date
+                    </span>
+                    <span class="detail-item__value">{{ profile.birthdate|date:"F j, Y"|default:"Not set" }}</span>
+                </div>
+
+                <div class="detail-item detail-item--full">
+                    <span class="detail-item__label">
+                        <i class="fas fa-book"></i>
+                        Bio
+                    </span>
+                    <span class="detail-item__value">{{ profile.bio|default:"No bio yet" }}</span>
+                </div>
+                {% else %}
+                <div class="detail-item detail-item--full">
+                    <div class="incomplete-alert">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <p>Your profile is not complete. <a href="/profile/complete/">Complete it now</a> to unlock all features.</p>                </div>
+                {% endif %}
+
+            </div>
+
+        </section>
+
+
+        <!-- ==============================
+             QUICK LINKS
+        =============================== -->
+        <section class="account-links">
+
+            <div class="section-header">
+                <h2>
+                    <i class="fas fa-link"></i>
+                    Quick Links
+                </h2>
+            </div>
+
+            <div class="links-grid">
+
+                <a href="#" class="link-card">
+                    <div class="link-card__icon link-card__icon--purple">
+                        <i class="fas fa-heart"></i>
+                    </div>
+                    <div class="link-card__content">
+                        <h3>My Likes</h3>
+                        <p>View people and listings you've liked</p>
+                    </div>
+                    <i class="fas fa-chevron-right"></i>
+                </a>
+
+                <a href="#" class="link-card">
+                    <div class="link-card__icon link-card__icon--green">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="link-card__content">
+                        <h3>My Matches</h3>
+                        <p>See your compatible roommates</p>
+                    </div>
+                    <i class="fas fa-chevron-right"></i>
+                </a>
+
+                <a href="#" class="link-card">
+                    <div class="link-card__icon link-card__icon--blue">
+                        <i class="fas fa-comments"></i>
+                    </div>
+                    <div class="link-card__content">
+                        <h3>Messages</h3>
+                        <p>Chat with your matches</p>
+                    </div>
+                    <i class="fas fa-chevron-right"></i>
+                </a>
+
+                <a href="#" class="link-card">
+                    <div class="link-card__icon link-card__icon--orange">
+                        <i class="fas fa-home"></i>
+                    </div>
+                    <div class="link-card__content">
+                        <h3>My Listings</h3>
+                        <p>Manage your room listings</p>
+                    </div>
+                    <i class="fas fa-chevron-right"></i>
+                </a>
+
+                <a href="#" class="link-card">
+                    <div class="link-card__icon link-card__icon--gray">
+                        <i class="fas fa-cog"></i>
+                    </div>
+                    <div class="link-card__content">
+                        <h3>Settings</h3>
+                        <p>Update your account settings</p>
+                    </div>
+                    <i class="fas fa-chevron-right"></i>
+                </a>
+
+            </div>
+
+        </section>
+
+
+        <!-- ==============================
+             LOGOUT
+        =============================== -->
+        <section class="account-logout">
+            
+            <form action="{% url 'logout' %}" method="POST">
+                {% csrf_token %}
+                <button type="submit" class="btn btn--danger">
+                    <i class="fas fa-sign-out-alt"></i>
+                    Logout
+                </button>
+            </form>
+
+        </section>
+
+    </div>
+
+</main>
+
+</body>
+</html>
