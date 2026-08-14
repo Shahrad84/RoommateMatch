@@ -82,7 +82,7 @@
                 <!-- Birth Date -->
                 <div class="form-group">
                     <label for="id_birthdate">Birth Date</label>
-                    {{ profile_form.birthdate }}
+                    <input type="date" name="birthdate" id="id_birthdate" value="{{ profile_form.birthdate.value|date:'Y-m-d'|default:'' }}" required>
                     {% if profile_form.birthdate.errors %}
                         <div class="field-error">
                             {% for error in profile_form.birthdate.errors %}
@@ -95,7 +95,7 @@
                 <!-- Job -->
                 <div class="form-group">
                     <label for="id_job">Job / Occupation</label>
-                    {{ profile_form.job }}
+                    <input type="text" name="job" id="id_job" maxlength="50" placeholder="e.g. Software Developer" value="{{ profile_form.job.value|default:'' }}" required>
                     {% if profile_form.job.errors %}
                         <div class="field-error">
                             {% for error in profile_form.job.errors %}
@@ -111,7 +111,7 @@
                         About You
                         <span class="optional">(Optional)</span>
                     </label>
-                    {{ profile_form.bio }}
+                    <textarea name="bio" id="id_bio" maxlength="200" rows="5" placeholder="Tell potential roommates a little about yourself...">{{ profile_form.bio.value|default:'' }}</textarea>
                     {% if profile_form.bio.errors %}
                         <div class="field-error">
                             {% for error in profile_form.bio.errors %}
@@ -143,174 +143,103 @@
                     </div>
                 </div>
 
-                <!-- Cleaning Frequency -->
-                <div class="form-group">
-                    <label for="id_cleaning_frequency">How often do you clean?</label>
-                    {{ lifestyle_form.cleaning_frequency }}
-                    {% if lifestyle_form.cleaning_frequency.errors %}
-                        <div class="field-error">
-                            {% for error in lifestyle_form.cleaning_frequency.errors %}
-                                <span>{{ error }}</span>
-                            {% endfor %}
-                        </div>
-                    {% endif %}
-                </div>
-
-                <!-- Noise Generating Level -->
-                <div class="form-group">
-                    <label for="id_noise_generating_level">How much noise do you usually make?</label>
-                    {{ lifestyle_form.noise_generating_level }}
-                    {% if lifestyle_form.noise_generating_level.errors %}
-                        <div class="field-error">
-                            {% for error in lifestyle_form.noise_generating_level.errors %}
-                                <span>{{ error }}</span>
-                            {% endfor %}
-                        </div>
-                    {% endif %}
-                </div>
-
-                <!-- Noise Tolerance -->
-                <div class="form-group">
-                    <label for="id_noise_tolerance">How tolerant are you of noise?</label>
-                    {{ lifestyle_form.noise_tolerance }}
-                    {% if lifestyle_form.noise_tolerance.errors %}
-                        <div class="field-error">
-                            {% for error in lifestyle_form.noise_tolerance.errors %}
-                                <span>{{ error }}</span>
-                            {% endfor %}
-                        </div>
-                    {% endif %}
-                </div>
-
-                <!-- Social Level -->
-                <div class="form-group">
-                    <label for="id_social_level">How social are you? (1-10)</label>
-                    {{ lifestyle_form.social_level }}
-                    {% if lifestyle_form.social_level.errors %}
-                        <div class="field-error">
-                            {% for error in lifestyle_form.social_level.errors %}
-                                <span>{{ error }}</span>
-                            {% endfor %}
-                        </div>
-                    {% endif %}
-                </div>
-
                 <!-- Smoking -->
                 <div class="form-group">
                     <label>Do you smoke?</label>
-                    <div class="radio-group">
-                        {% for radio in lifestyle_form.smoking %}
-                            <label class="radio-option">
-                                {{ radio.tag }}
-                                <span>{{ radio.choice_label }}</span>
-                            </label>
-                        {% endfor %}
+                    <div class="radio-group radio-group--boolean">
+                        <label class="radio-option">
+                            <input type="radio" name="smoking" value="True" {% if lifestyle_form.smoking.value == True %}checked{% endif %} required>
+                            <span>Yes</span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="smoking" value="False" {% if lifestyle_form.smoking.value == False %}checked{% endif %} required>
+                            <span>No</span>
+                        </label>
                     </div>
-                    {% if lifestyle_form.smoking.errors %}
-                        <div class="field-error">
-                            {% for error in lifestyle_form.smoking.errors %}
-                                <span>{{ error }}</span>
-                            {% endfor %}
-                        </div>
-                    {% endif %}
+                </div>
+
+                <!-- Cleanliness -->
+                <div class="form-group">
+                    <label for="id_cleanliness">
+                        How clean are you?
+                    </label>
+                    <div class="range-container">
+                        <input type="range" id="id_cleanliness" name="cleanliness" min="1" max="10" value="{{ lifestyle_form.cleanliness.value|default:5 }}" required>
+                        <span class="range-value" id="cleanliness_value">5</span>
+                    </div>
+                    <div class="range-labels">
+                        <span>1 = Very messy</span>
+                        <span>10 = Very clean</span>
+                    </div>
+                </div>
+
+                <!-- Noise Generating -->
+                <div class="form-group">
+                    <label for="id_noise_generating">
+                        How much noise do you make?
+                    </label>
+                    <div class="range-container">
+                        <input type="range" id="id_noise_generating" name="noise_generating" min="1" max="10" value="{{ lifestyle_form.noise_generating.value|default:5 }}" required>
+                        <span class="range-value" id="noise_generating_value">5</span>
+                    </div>
+                    <div class="range-labels">
+                        <span>1 = Very quiet</span>
+                        <span>10 = Very noisy</span>
+                    </div>
+                </div>
+
+                <!-- Social Activity -->
+                <div class="form-group">
+                    <label for="id_social_activity">
+                        How social are you?
+                    </label>
+                    <div class="range-container">
+                        <input type="range" id="id_social_activity" name="social_activity" min="1" max="10" value="{{ lifestyle_form.social_activity.value|default:5 }}" required>
+                        <span class="range-value" id="social_activity_value">5</span>
+                    </div>
+                    <div class="range-labels">
+                        <span>1 = Introverted</span>
+                        <span>10 = Very social</span>
+                    </div>
+                </div>
+
+                <!-- Wake Up -->
+                <div class="form-group">
+                    <label for="id_wake_up">What time do you usually wake up?</label>
+                    <input type="time" name="wake_up" id="id_wake_up" value="{{ lifestyle_form.wake_up.value|time:'H:i'|default:'' }}" required>
+                </div>
+
+                <!-- Sleep -->
+                <div class="form-group">
+                    <label for="id_sleep">What time do you usually go to sleep?</label>
+                    <input type="time" name="sleep" id="id_sleep" value="{{ lifestyle_form.sleep.value|time:'H:i'|default:'' }}" required>
                 </div>
 
                 <!-- Has Pets -->
                 <div class="form-group">
                     <label>Do you have pets?</label>
-                    <div class="radio-group">
-                        {% for radio in lifestyle_form.has_pets %}
-                            <label class="radio-option">
-                                {{ radio.tag }}
-                                <span>{{ radio.choice_label }}</span>
-                            </label>
-                        {% endfor %}
+                    <div class="radio-group radio-group--boolean">
+                        <label class="radio-option">
+                            <input type="radio" name="has_pets" value="True" {% if lifestyle_form.has_pets.value == True %}checked{% endif %} required>
+                            <span>Yes</span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="has_pets" value="False" {% if lifestyle_form.has_pets.value == False %}checked{% endif %} required>
+                            <span>No</span>
+                        </label>
                     </div>
-                    {% if lifestyle_form.has_pets.errors %}
-                        <div class="field-error">
-                            {% for error in lifestyle_form.has_pets.errors %}
-                                <span>{{ error }}</span>
-                            {% endfor %}
-                        </div>
-                    {% endif %}
+                </div>
+
+                <!-- Guests Frequency -->
+                <div class="form-group">
+                    <label for="id_guests_frequency">How often do you have guests?</label>
+                    {{ lifestyle_form.guests_frequency }}
                 </div>
 
                 <!-- Cooking -->
                 <div class="form-group">
                     <label for="id_cooking">How often do you cook?</label>
                     {{ lifestyle_form.cooking }}
-                    {% if lifestyle_form.cooking.errors %}
-                        <div class="field-error">
-                            {% for error in lifestyle_form.cooking.errors %}
-                                <span>{{ error }}</span>
-                            {% endfor %}
-                        </div>
-                    {% endif %}
-                </div>
-
-                <!-- Eating at Home -->
-                <div class="form-group">
-                    <label for="id_eating_at_home">How often do you eat at home?</label>
-                    {{ lifestyle_form.eating_at_home }}
-                    {% if lifestyle_form.eating_at_home.errors %}
-                        <div class="field-error">
-                            {% for error in lifestyle_form.eating_at_home.errors %}
-                                <span>{{ error }}</span>
-                            {% endfor %}
-                        </div>
-                    {% endif %}
-                </div>
-
-                <!-- Wake Up -->
-                <div class="form-group">
-                    <label for="id_wake_up">What time do you usually wake up?</label>
-                    {{ lifestyle_form.wake_up }}
-                    {% if lifestyle_form.wake_up.errors %}
-                        <div class="field-error">
-                            {% for error in lifestyle_form.wake_up.errors %}
-                                <span>{{ error }}</span>
-                            {% endfor %}
-                        </div>
-                    {% endif %}
-                </div>
-
-                <!-- Sleep -->
-                <div class="form-group">
-                    <label for="id_sleep">What time do you usually go to sleep?</label>
-                    {{ lifestyle_form.sleep }}
-                    {% if lifestyle_form.sleep.errors %}
-                        <div class="field-error">
-                            {% for error in lifestyle_form.sleep.errors %}
-                                <span>{{ error }}</span>
-                            {% endfor %}
-                        </div>
-                    {% endif %}
-                </div>
-
-                <!-- Guests -->
-                <div class="form-group">
-                    <label for="id_guests">How often do you have guests?</label>
-                    {{ lifestyle_form.guests }}
-                    {% if lifestyle_form.guests.errors %}
-                        <div class="field-error">
-                            {% for error in lifestyle_form.guests.errors %}
-                                <span>{{ error }}</span>
-                            {% endfor %}
-                        </div>
-                    {% endif %}
-                </div>
-
-                <!-- Overnight Guests -->
-                <div class="form-group">
-                    <label for="id_overnight_guests">How often do you have overnight guests?</label>
-                    {{ lifestyle_form.overnight_guests }}
-                    {% if lifestyle_form.overnight_guests.errors %}
-                        <div class="field-error">
-                            {% for error in lifestyle_form.overnight_guests.errors %}
-                                <span>{{ error }}</span>
-                            {% endfor %}
-                        </div>
-                    {% endif %}
                 </div>
 
                 <div class="step-actions">
@@ -338,135 +267,178 @@
                     </div>
                 </div>
 
-                <!-- Cleanliness Weight -->
+                <!-- Cleanliness Importance -->
                 <div class="form-group">
-                    <label for="id_cleanliness_weight">Cleanliness importance (1-10)</label>
-                    {{ preference_form.cleanliness_weight }}
-                    {% if preference_form.cleanliness_weight.errors %}
-                        <div class="field-error">
-                            {% for error in preference_form.cleanliness_weight.errors %}
-                                <span>{{ error }}</span>
-                            {% endfor %}
-                        </div>
-                    {% endif %}
+                    <label for="id_cleanliness_importance">
+                        How important is cleanliness?
+                    </label>
+                    <div class="range-container">
+                        <input type="range" id="id_cleanliness_importance" name="cleanliness_importance" min="1" max="10" value="{{ preference_form.cleanliness_importance.value|default:5 }}" required>
+                        <span class="range-value" id="cleanliness_importance_value">5</span>
+                    </div>
+                    <div class="range-labels">
+                        <span>1 = Not important</span>
+                        <span>10 = Very important</span>
+                    </div>
                 </div>
 
-                <!-- Noise Weight -->
+                <!-- Noise Importance -->
                 <div class="form-group">
-                    <label for="id_noise_weight">Noise importance (1-10)</label>
-                    {{ preference_form.noise_weight }}
-                    {% if preference_form.noise_weight.errors %}
-                        <div class="field-error">
-                            {% for error in preference_form.noise_weight.errors %}
-                                <span>{{ error }}</span>
-                            {% endfor %}
-                        </div>
-                    {% endif %}
+                    <label for="id_noise_importance">
+                        How important is noise level?
+                    </label>
+                    <div class="range-container">
+                        <input type="range" id="id_noise_importance" name="noise_importance" min="1" max="10" value="{{ preference_form.noise_importance.value|default:5 }}" required>
+                        <span class="range-value" id="noise_importance_value">5</span>
+                    </div>
+                    <div class="range-labels">
+                        <span>1 = Not important</span>
+                        <span>10 = Very important</span>
+                    </div>
                 </div>
 
-                <!-- Social Weight -->
+                <!-- Max Noise -->
                 <div class="form-group">
-                    <label for="id_social_weight">Social compatibility importance (1-10)</label>
-                    {{ preference_form.social_weight }}
-                    {% if preference_form.social_weight.errors %}
-                        <div class="field-error">
-                            {% for error in preference_form.social_weight.errors %}
-                                <span>{{ error }}</span>
-                            {% endfor %}
-                        </div>
-                    {% endif %}
+                    <label for="id_max_noise">
+                        Maximum noise you can tolerate?
+                    </label>
+                    <div class="range-container">
+                        <input type="range" id="id_max_noise" name="max_noise" min="1" max="10" value="{{ preference_form.max_noise.value|default:5 }}" required>
+                        <span class="range-value" id="max_noise_value">5</span>
+                    </div>
+                    <div class="range-labels">
+                        <span>1 = Very quiet</span>
+                        <span>10 = Very noisy</span>
+                    </div>
                 </div>
 
-                <!-- Pets Weight -->
+                <!-- Social Importance -->
                 <div class="form-group">
-                    <label for="id_pets_weight">Pet compatibility importance (1-10)</label>
-                    {{ preference_form.pets_weight }}
-                    {% if preference_form.pets_weight.errors %}
-                        <div class="field-error">
-                            {% for error in preference_form.pets_weight.errors %}
-                                <span>{{ error }}</span>
-                            {% endfor %}
-                        </div>
-                    {% endif %}
+                    <label for="id_social_importance">
+                        How important is social compatibility?
+                    </label>
+                    <div class="range-container">
+                        <input type="range" id="id_social_importance" name="social_importance" min="1" max="10" value="{{ preference_form.social_importance.value|default:5 }}" required>
+                        <span class="range-value" id="social_importance_value">5</span>
+                    </div>
+                    <div class="range-labels">
+                        <span>1 = Not important</span>
+                        <span>10 = Very important</span>
+                    </div>
                 </div>
 
-                <!-- Cooking Weight -->
+                
+                <!-- Preferred Social Activity -->
                 <div class="form-group">
-                    <label for="id_cooking_weight">Cooking compatibility importance (1-10)</label>
-                    {{ preference_form.cooking_weight }}
-                    {% if preference_form.cooking_weight.errors %}
-                        <div class="field-error">
-                            {% for error in preference_form.cooking_weight.errors %}
-                                <span>{{ error }}</span>
-                            {% endfor %}
-                        </div>
-                    {% endif %}
-                </div>
-
-                <!-- Guests Weight -->
-                <div class="form-group">
-                    <label for="id_guests_weight">Guests compatibility importance (1-10)</label>
-                    {{ preference_form.guests_weight }}
-                    {% if preference_form.guests_weight.errors %}
-                        <div class="field-error">
-                            {% for error in preference_form.guests_weight.errors %}
-                                <span>{{ error }}</span>
-                            {% endfor %}
-                        </div>
-                    {% endif %}
-                </div>
-
-                <!-- Sleep Schedule Weight -->
-                <div class="form-group">
-                    <label for="id_sleep_schedule_weight">Sleep schedule importance (1-10)</label>
-                    {{ preference_form.sleep_schedule_weight }}
-                    {% if preference_form.sleep_schedule_weight.errors %}
-                        <div class="field-error">
-                            {% for error in preference_form.sleep_schedule_weight.errors %}
-                                <span>{{ error }}</span>
-                            {% endfor %}
-                        </div>
-                    {% endif %}
-                </div>
-
-                <!-- Accept Smokers -->
-                <div class="form-group">
-                    <label>Are you comfortable living with smokers?</label>
-                    <div class="radio-group">
-                        {% for radio in preference_form.accepts_smokers %}
-                            <label class="radio-option">
-                                {{ radio.tag }}
-                                <span>{{ radio.choice_label }}</span>
-                            </label>
+                    <label for="id_preferred_social_activity">
+                        Preferred social activity level?
+                    </label>
+                    
+                    <div class="range-container">
+                        <input type="range" id="id_preferred_social_activity" name="preferred_social_activity" min="1" max="10" value="{{ preference_form.preferred_social_activity.value|default:5 }}" required>
+                        <span class="range-value" id="id_preferred_social_activity_value">5</span>
+                    </div>
+                    <div class="range-labels">
+                        <span>1 = Quiet</span>
+                        <span>10 = Social</span>
+                    </div>
+                    {% if preference_form.preferred_social_activity.errors %}
+                    <div class="field-error">
+                        {% for error in preference_form.preferred_social_activity.errors %}
+                        <span>{{ error }}</span>
                         {% endfor %}
                     </div>
-                    {% if preference_form.accepts_smokers.errors %}
-                        <div class="field-error">
-                            {% for error in preference_form.accepts_smokers.errors %}
-                                <span>{{ error }}</span>
-                            {% endfor %}
-                        </div>
                     {% endif %}
                 </div>
 
-                <!-- Accept Pets -->
+                <!-- Sleep Schedule Importance -->
+                <div class="form-group">
+                    <label for="id_sleep_schedule_importance">
+                        How important is sleep schedule?
+                    </label>
+                    <div class="range-container">
+                        <input type="range" id="id_sleep_schedule_importance" name="sleep_schedule_importance" min="1" max="10" value="{{ preference_form.sleep_schedule_importance.value|default:5 }}" required>
+                        <span class="range-value" id="sleep_schedule_importance_value">5</span>
+                    </div>
+                    <div class="range-labels">
+                        <span>1 = Not important</span>
+                        <span>10 = Very important</span>
+                    </div>
+                </div>
+
+                <!-- Guests Importance -->
+                <div class="form-group">
+                    <label for="id_guests_importance">
+                        How important is guests frequency?
+                    </label>
+                    <div class="range-container">
+                        <input type="range" id="id_guests_importance" name="guests_importance" min="1" max="10" value="{{ preference_form.guests_importance.value|default:5 }}" required>
+                        <span class="range-value" id="guests_importance_value">5</span>
+                    </div>
+                    <div class="range-labels">
+                        <span>1 = Not important</span>
+                        <span>10 = Very important</span>
+                    </div>
+                </div>
+
+                <!-- Max Guests Frequency -->
+                <div class="form-group">
+                    <label for="id_max_guests_frequency">
+                        Maximum guests frequency you can tolerate?
+                    </label>
+                    <div class="range-container">
+                        <input type="range" id="id_max_guests_frequency" name="max_guests_frequency" min="1" max="10" value="{{ preference_form.max_guests_frequency.value|default:5 }}" required>
+                        <span class="range-value" id="max_guests_frequency_value">5</span>
+                    </div>
+                    <div class="range-labels">
+                        <span>1 = Never</span>
+                        <span>10 = Always</span>
+                    </div>
+                </div>
+
+                <!-- Cooking Importance -->
+                <div class="form-group">
+                    <label for="id_cooking_importance">
+                        How important is cooking?
+                    </label>
+                    <div class="range-container">
+                        <input type="range" id="id_cooking_importance" name="cooking_importance" min="1" max="10" value="{{ preference_form.cooking_importance.value|default:5 }}" required>
+                        <span class="range-value" id="cooking_importance_value">5</span>
+                    </div>
+                    <div class="range-labels">
+                        <span>1 = Not important</span>
+                        <span>10 = Very important</span>
+                    </div>
+                </div>
+
+                <!-- Accepts Pets -->
                 <div class="form-group">
                     <label>Are you comfortable living with pets?</label>
-                    <div class="radio-group">
-                        {% for radio in preference_form.accepts_pets %}
-                            <label class="radio-option">
-                                {{ radio.tag }}
-                                <span>{{ radio.choice_label }}</span>
-                            </label>
-                        {% endfor %}
+                    <div class="radio-group radio-group--boolean">
+                        <label class="radio-option">
+                            <input type="radio" name="accepts_pets" value="True" {% if preference_form.accepts_pets.value == True %}checked{% endif %} required>
+                            <span>Yes</span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="accepts_pets" value="False" {% if preference_form.accepts_pets.value == False %}checked{% endif %} required>
+                            <span>No</span>
+                        </label>
                     </div>
-                    {% if preference_form.accepts_pets.errors %}
-                        <div class="field-error">
-                            {% for error in preference_form.accepts_pets.errors %}
-                                <span>{{ error }}</span>
-                            {% endfor %}
-                        </div>
-                    {% endif %}
+                </div>
+
+                <!-- Accepts Smoking -->
+                <div class="form-group">
+                    <label>Are you comfortable living with smokers?</label>
+                    <div class="radio-group radio-group--boolean">
+                        <label class="radio-option">
+                            <input type="radio" name="accepts_smoking" value="True" {% if preference_form.accepts_smoking.value == True %}checked{% endif %} required>
+                            <span>Yes</span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="accepts_smoking" value="False" {% if preference_form.accepts_smoking.value == False %}checked{% endif %} required>
+                            <span>No</span>
+                        </label>
+                    </div>
                 </div>
 
                 <!-- Final Actions -->
@@ -513,8 +485,43 @@
     }
 
 
+    // Validate current step
+    function validateStep(step) {
+        const currentStepElement = document.querySelector(`.profile-step[data-step="${step}"]`);
+        if (!currentStepElement) return true;
+
+        const inputs = currentStepElement.querySelectorAll('input[required], select[required], textarea[required]');
+        let isValid = true;
+
+        inputs.forEach(input => {
+            input.classList.remove('error');
+
+            if (input.type === 'radio') {
+                const name = input.name;
+                const checked = currentStepElement.querySelector(`input[name="${name}"]:checked`);
+                if (!checked) {
+                    isValid = false;
+                    currentStepElement.querySelectorAll(`input[name="${name}"]`).forEach(radio => {
+                        radio.classList.add('error');
+                    });
+                }
+            } else if (!input.value.trim()) {
+                isValid = false;
+                input.classList.add('error');
+            }
+        });
+
+        return isValid;
+    }
+
+
     // Next step
     function nextStep() {
+        if (!validateStep(currentStep)) {
+            alert('Please fill in all required fields before continuing.');
+            return;
+        }
+
         if (currentStep < totalSteps) {
             currentStep++;
             updateStep(currentStep);
@@ -545,9 +552,15 @@
     });
 
 
-    // Form submit - disable button to prevent double submission
+    // Form submit
     if (form) {
-        form.addEventListener('submit', function() {
+        form.addEventListener('submit', function(event) {
+            if (!validateStep(currentStep)) {
+                event.preventDefault();
+                alert('Please fill in all required fields before submitting.');
+                return;
+            }
+
             const submitButton = form.querySelector('button[type="submit"]');
             if (submitButton) {
                 submitButton.disabled = true;
@@ -570,6 +583,38 @@
             } else {
                 form.requestSubmit();
             }
+        });
+    });
+
+
+    // Range input live value display
+    
+// Range input live value display - FIXED VERSION
+document.querySelectorAll('input[type="range"]').forEach(range => {
+    // Find the value display element next to the range
+    const container = range.closest('.range-container');
+    const valueDisplay = container ? container.querySelector('.range-value') : null;
+    
+    if (valueDisplay) {
+        // Update on input
+        range.addEventListener('input', function() {
+            valueDisplay.textContent = this.value;
+        });
+        
+        // Set initial value
+        valueDisplay.textContent = range.value;
+    }
+});
+
+
+    // Radio button visual feedback
+    document.querySelectorAll('.radio-option').forEach(option => {
+        option.addEventListener('click', function() {
+            const group = this.closest('.radio-group');
+            group.querySelectorAll('.radio-option').forEach(opt => {
+                opt.classList.remove('radio-option--selected');
+            });
+            this.classList.add('radio-option--selected');
         });
     });
 

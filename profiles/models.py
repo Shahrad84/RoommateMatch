@@ -62,64 +62,64 @@ class LifestyleProfile(models.Model):
         related_name="lifestyle"
     )
 
-    cleaning_frequency = models.CharField(
-        max_length=30,
-        choices=TIME_FREQUENCY_CHOICES
+    smoking = models.BooleanField(
+        null=True
     )
 
-    noise_generating_level = models.CharField(
-        max_length=30,
-        choices=NOISE_TOLERANCE_CHOICES
-    )
-
-    noise_tolerance = models.CharField(
-        max_length=30,
-        choices=NOISE_TOLERANCE_CHOICES
-    )
-
-    social_level = models.PositiveSmallIntegerField(
+    cleanliness = models.PositiveSmallIntegerField(
         validators=[
             MinValueValidator(1),
             MaxValueValidator(10)
         ]
     )
 
-    smoking = models.BooleanField(
-        null=True
+    noise_generating = models.PositiveSmallIntegerField(
+        validators=[
+            MinValueValidator(1),
+            MaxValueValidator(10)
+        ]
     )
 
-    has_pets = models.BooleanField(
-        null=True
+    social_activity = models.PositiveSmallIntegerField(
+        validators=[
+            MinValueValidator(1),
+            MaxValueValidator(10)
+        ]
     )
 
-    cooking = models.CharField(
-        max_length=30,
-        choices=TIME_FREQUENCY_CHOICES
-    )
-
-    eating_at_home = models.CharField(
-        max_length=30,
-        choices=TIME_FREQUENCY_CHOICES
-    )
 
     wake_up = models.TimeField()
 
     sleep = models.TimeField()
 
-    guests = models.CharField(
+
+    has_pets = models.BooleanField(
+        null=True
+    )
+
+    guests_frequency = models.CharField(
         max_length=12,
         choices=TIME_FREQUENCY_CHOICES
     )
-
-    overnight_guests = models.CharField(
-        max_length=12,
+    
+    cooking = models.CharField(
+        max_length=30,
         choices=TIME_FREQUENCY_CHOICES
     )
 
     def is_complete(self):
         required_fields = [
-            self.birthdate,
-            self.job,
+            self.smoking,
+            self.cleanliness,
+            self.noise_generating,
+            self.social_activity,
+            self.wake_up,
+            self.sleep,
+            self.has_pets,
+            self.guests_frequency,
+            self.cooking
+,
+
         ]
 
         for f in required_fields:
@@ -144,67 +144,91 @@ class Preference(models.Model):
         related_name="preference"
     )
 
-    cleanliness_weight = models.PositiveSmallIntegerField(
+    cleanliness_importance = models.PositiveSmallIntegerField(
         validators=[
             MinValueValidator(1),
             MaxValueValidator(10)
         ]
     )
 
-    noise_weight = models.PositiveSmallIntegerField(
+    noise_importance = models.PositiveSmallIntegerField(
         validators=[
             MinValueValidator(1),
             MaxValueValidator(10)
         ]
     )
 
-    social_weight = models.PositiveSmallIntegerField(
+    max_noise = models.PositiveSmallIntegerField(
         validators=[
             MinValueValidator(1),
             MaxValueValidator(10)
         ]
     )
 
-    pets_weight = models.PositiveSmallIntegerField(
+    social_importance = models.PositiveSmallIntegerField(
         validators=[
             MinValueValidator(1),
             MaxValueValidator(10)
         ]
     )
 
-    cooking_weight = models.PositiveSmallIntegerField(
+    preferred_social_activity = models.PositiveSmallIntegerField(
         validators=[
             MinValueValidator(1),
             MaxValueValidator(10)
         ]
     )
 
-    guests_weight = models.PositiveSmallIntegerField(
+    sleep_schedule_importance = models.PositiveSmallIntegerField(
         validators=[
             MinValueValidator(1),
             MaxValueValidator(10)
         ]
     )
 
-    sleep_schedule_weight = models.PositiveSmallIntegerField(
+    guests_importance = models.PositiveSmallIntegerField(
         validators=[
             MinValueValidator(1),
             MaxValueValidator(10)
         ]
     )
 
-    accepts_smokers = models.BooleanField(
-        null=True
+    max_guests_frequency = models.PositiveSmallIntegerField(
+        validators=[
+            MinValueValidator(1),
+            MaxValueValidator(10)
+        ]
     )
+
+    cooking_importance = models.PositiveSmallIntegerField(
+        validators=[
+            MinValueValidator(1),
+            MaxValueValidator(10)
+        ]
+    )    
 
     accepts_pets = models.BooleanField(
         null=True
     )
 
+    accepts_smoking = models.BooleanField(
+        null=True
+    )
+
     def is_complete(self):
         required_fields = [
-            self.birthdate,
-            self.job,
+            self.cleanliness_importance,
+            self.noise_importance,
+            self.max_noise,
+            self.social_importance,
+            self.preferred_social_activity,
+            self.sleep_schedule_importance,
+            self.guests_importance,
+            self.max_guests_frequency,
+            self.max_guests_frequency,
+            self.cooking_importance,
+            self.accepts_pets,
+            self.accepts_smoking,
         ]
 
         for f in required_fields:

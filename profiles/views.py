@@ -33,15 +33,19 @@ def profile_complete(request):
 
         # Create forms using modelform_factory
         ProfileForm = forms.modelform_factory(Profile, fields=['birthdate', 'job', 'bio'])
+        
         LifestyleForm = forms.modelform_factory(LifestyleProfile, fields=[
-            'cleaning_frequency', 'noise_generating_level', 'noise_tolerance', 
-            'social_level', 'smoking', 'has_pets', 'cooking', 'eating_at_home',
-            'wake_up', 'sleep', 'guests', 'overnight_guests'
+            'smoking', 'cleanliness', 'noise_generating', 
+            'social_activity', 'wake_up', 'sleep', 'has_pets',
+            'guests_frequency', 'cooking'
         ])
+        
         PreferenceForm = forms.modelform_factory(Preference, fields=[
-            'cleanliness_weight', 'noise_weight', 'social_weight', 
-            'pets_weight', 'cooking_weight', 'guests_weight', 
-            'sleep_schedule_weight', 'accepts_smokers', 'accepts_pets'
+            'cleanliness_importance', 'noise_importance', 'max_noise', 
+            'social_importance', 'preferred_social_activity', 
+            'sleep_schedule_importance', 'guests_importance', 
+            'max_guests_frequency', 'cooking_importance', 
+            'accepts_pets', 'accepts_smoking'
         ])
 
         profile_form = ProfileForm(request.POST, instance=profile)
@@ -50,26 +54,44 @@ def profile_complete(request):
         
         # Validate all forms
         if profile_form.is_valid() and lifestyle_form.is_valid() and preference_form.is_valid():
-            profile_form.save()
-            lifestyle_form.save()
-            preference_form.save()
+            
+            # Set account before saving
+            profile_obj = profile_form.save(commit=False)
+            profile_obj.account = account
+            profile_obj.save()
+            
+            lifestyle_obj = lifestyle_form.save(commit=False)
+            lifestyle_obj.account = account
+            lifestyle_obj.save()
+            
+            preference_obj = preference_form.save(commit=False)
+            preference_obj.account = account
+            preference_obj.save()
+            
             messages.success(request, 'Profile saved successfully!')            
             return redirect('/dashboard/')
         else:
+            print("Profile Form Errors:", profile_form.errors)
+            print("Lifestyle Form Errors:", lifestyle_form.errors)
+            print("Preference Form Errors:", preference_form.errors)
             messages.error(request, 'Please fix the errors below.')
     
     else:
         # Create forms using modelform_factory
         ProfileForm = forms.modelform_factory(Profile, fields=['birthdate', 'job', 'bio'])
+        
         LifestyleForm = forms.modelform_factory(LifestyleProfile, fields=[
-            'cleaning_frequency', 'noise_generating_level', 'noise_tolerance', 
-            'social_level', 'smoking', 'has_pets', 'cooking', 'eating_at_home',
-            'wake_up', 'sleep', 'guests', 'overnight_guests'
+            'smoking', 'cleanliness', 'noise_generating', 
+            'social_activity', 'wake_up', 'sleep', 'has_pets',
+            'guests_frequency', 'cooking'
         ])
+        
         PreferenceForm = forms.modelform_factory(Preference, fields=[
-            'cleanliness_weight', 'noise_weight', 'social_weight', 
-            'pets_weight', 'cooking_weight', 'guests_weight', 
-            'sleep_schedule_weight', 'accepts_smokers', 'accepts_pets'
+            'cleanliness_importance', 'noise_importance', 'max_noise', 
+            'social_importance', 'preferred_social_activity', 
+            'sleep_schedule_importance', 'guests_importance', 
+            'max_guests_frequency', 'cooking_importance', 
+            'accepts_pets', 'accepts_smoking'
         ])
 
         profile_form = ProfileForm(instance=profile)
@@ -81,5 +103,3 @@ def profile_complete(request):
         'lifestyle_form': lifestyle_form,
         'preference_form': preference_form,
     })
-
-

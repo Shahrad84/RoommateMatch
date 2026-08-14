@@ -50,6 +50,33 @@
     opacity: 0.85;
 }
 
+/* ====== ACCOUNT BUTTON ====== */
+.btn--account {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    background: rgba(255, 255, 255, 0.2);
+    color: #fff;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    margin-top: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.btn--account:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+}
+
+.btn--account:active {
+    transform: translateY(0);
+}
+
 /* ====== PROFILE COMPLETION ====== */
 .profile-completion {
     background: #fff;
@@ -463,6 +490,11 @@
     .dashboard__welcome-content {
         padding: 24px 18px;
         border-radius: 16px;
+    }
+
+    .btn--account {
+        width: 100%;
+        justify-content: center;
     }
 
     .profile-completion {

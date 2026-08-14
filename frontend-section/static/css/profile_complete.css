@@ -267,7 +267,6 @@ body {
 .form-group input[type="date"],
 .form-group input[type="time"],
 .form-group input[type="number"],
-.form-group input[type="range"],
 .form-group select,
 .form-group textarea {
     width: 100%;
@@ -310,6 +309,66 @@ body {
     padding-right: 40px;
 }
 
+/* ====== DATE INPUT ====== */
+.form-group input[type="date"] {
+    cursor: pointer;
+    position: relative;
+}
+
+.form-group input[type="date"]::-webkit-calendar-picker-indicator {
+    cursor: pointer;
+    font-size: 18px;
+    opacity: 0.6;
+    transition: var(--transition);
+}
+
+.form-group input[type="date"]::-webkit-calendar-picker-indicator:hover {
+    opacity: 1;
+}
+
+/* ====== TIME INPUT ====== */
+.form-group input[type="time"] {
+    cursor: pointer;
+}
+
+.form-group input[type="time"]::-webkit-calendar-picker-indicator {
+    cursor: pointer;
+    font-size: 18px;
+    opacity: 0.6;
+    transition: var(--transition);
+}
+
+.form-group input[type="time"]::-webkit-calendar-picker-indicator:hover {
+    opacity: 1;
+}
+
+/* ====== RANGE CONTAINER ====== */
+.range-container {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.range-container input[type="range"] {
+    flex: 1;
+}
+
+.range-value {
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    background: rgba(108, 99, 255, 0.1);
+    color: var(--color-primary);
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    font-weight: 700;
+    border: 2px solid var(--color-primary);
+}
+
+/* ====== RANGE SLIDER ====== */
 .form-group input[type="range"] {
     padding: 0;
     border: none;
@@ -319,28 +378,50 @@ body {
     background: var(--color-border);
     border-radius: 3px;
     appearance: none;
+    -webkit-appearance: none;
+    outline: none;
 }
 
 .form-group input[type="range"]::-webkit-slider-thumb {
     appearance: none;
-    width: 20px;
-    height: 20px;
+    -webkit-appearance: none;
+    width: 22px;
+    height: 22px;
     border-radius: 50%;
     background: var(--color-primary);
     cursor: pointer;
     box-shadow: 0 2px 8px rgba(108, 99, 255, 0.3);
     transition: var(--transition);
+    border: 3px solid var(--color-white);
 }
 
 .form-group input[type="range"]::-webkit-slider-thumb:hover {
     transform: scale(1.2);
+    box-shadow: 0 4px 16px rgba(108, 99, 255, 0.5);
 }
 
-.form-group small {
-    display: block;
-    margin-top: 6px;
+.form-group input[type="range"]::-moz-range-thumb {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: var(--color-primary);
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(108, 99, 255, 0.3);
+    border: 3px solid var(--color-white);
+    transition: var(--transition);
+}
+
+.form-group input[type="range"]::-moz-range-thumb:hover {
+    transform: scale(1.2);
+}
+
+/* ====== RANGE LABELS ====== */
+.range-labels {
+    display: flex;
+    justify-content: space-between;
     font-size: 12px;
     color: var(--color-light-gray);
+    margin-top: 8px;
 }
 
 /* ====== RADIO GROUP ====== */
@@ -348,6 +429,11 @@ body {
     display: flex;
     gap: 12px;
     flex-wrap: wrap;
+}
+
+.radio-group--boolean {
+    display: flex;
+    gap: 12px;
 }
 
 .radio-option {
@@ -362,6 +448,9 @@ body {
     font-size: 14px;
     font-weight: 500;
     color: var(--color-dark);
+    flex: 1;
+    justify-content: center;
+    min-width: 80px;
 }
 
 .radio-option:hover {
@@ -381,6 +470,20 @@ body {
     background: rgba(108, 99, 255, 0.06);
     color: var(--color-primary);
     font-weight: 600;
+}
+
+/* Selected state (added via JS) */
+.radio-option--selected {
+    border-color: var(--color-primary);
+    background: rgba(108, 99, 255, 0.06);
+    color: var(--color-primary);
+    font-weight: 600;
+}
+
+/* Error state for radio */
+.radio-option input.error {
+    outline: 2px solid var(--color-danger);
+    border-radius: 50%;
 }
 
 /* ====== FIELD ERRORS ====== */
@@ -491,6 +594,10 @@ body {
         flex-direction: column;
     }
 
+    .radio-group--boolean {
+        flex-direction: row;
+    }
+
     .radio-option {
         justify-content: center;
     }
@@ -506,6 +613,17 @@ body {
 
     .progress-step p {
         display: none;
+    }
+
+    .range-container {
+        gap: 10px;
+    }
+
+    .range-value {
+        width: 36px;
+        height: 36px;
+        min-width: 36px;
+        font-size: 16px;
     }
 }
 
@@ -532,5 +650,24 @@ body {
         width: 30px;
         height: 30px;
         font-size: 12px;
+    }
+
+    .radio-group--boolean {
+        flex-direction: column;
+    }
+
+    .range-labels {
+        font-size: 10px;
+    }
+
+    .range-container {
+        gap: 8px;
+    }
+
+    .range-value {
+        width: 32px;
+        height: 32px;
+        min-width: 32px;
+        font-size: 14px;
     }
 }

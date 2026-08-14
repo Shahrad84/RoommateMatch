@@ -35,6 +35,12 @@
                     Find a roommate who matches your lifestyle.
                 </p>
 
+                <a href="/accounts/overview/" class="btn btn--account">
+                    <i class="fas fa-user"></i>
+                    My Account
+                    <i class="fas fa-arrow-right"></i>
+                </a>
+
             </div>
 
         </section>
@@ -44,42 +50,7 @@
              PROFILE COMPLETION STATUS
         =============================== -->
 
-        {% if profile_complete %}
-
-            <!-- PROFILE COMPLETE -->
-            <section class="profile-completion profile-completion--complete">
-
-                <div class="profile-completion__header">
-
-                    <div>
-                        <span class="profile-completion__label">
-                            Profile Status
-                        </span>
-                        <h2 class="profile-completion__percentage">
-                            100%
-                        </h2>
-                    </div>
-
-                    <div class="profile-completion__icon">
-                        <i class="fas fa-check-circle"></i>
-                    </div>
-
-                </div>
-
-                <div class="profile-progress">
-                    <div class="profile-progress__bar" style="width: 100%;"></div>
-                </div>
-
-                <div class="profile-completion__body">
-                    <div>
-                        <h3>✅ Your profile is complete!</h3>
-                        <p>You're all set! Start exploring and find your perfect roommate.</p>
-                    </div>
-                </div>
-
-            </section>
-
-        {% else %}
+        {% if not profile_complete %}
 
             <!-- PROFILE INCOMPLETE -->
             <section class="profile-completion profile-completion--incomplete">
@@ -153,7 +124,7 @@
 
                 <!-- Find Roommates -->
                 {% if profile_complete %}
-                    <a href="#" class="dashboard-feature">
+                    <a href="/matching/find/" class="dashboard-feature">
                 {% else %}
                     <div class="dashboard-feature dashboard-feature--locked">
                 {% endif %}
