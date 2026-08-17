@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Explore</title>
+</head>
+<body>
+    <h1>Explore Results</h1>
+    
+    <p>Total Digged: {{ total_digged }}</p>
+    <p>Accepted: {{ total_accepted }}</p>
+    <p>Rejected: {{ total_rejected }}</p>
+    
+    <h2>Rejected Users:</h2>
+    {% for r in rejected %}
+    <p>❌ {{ r.username }} - {{ r.reason }}</p>
+    {% endfor %}
+    
+    <h2>Accepted Users:</h2>
+    {% for c in candidates %}
+    <p>✅ {{ c.account.username }} - {{ c.account.profile.job }}</p>
+    {% endfor %}
+</body>
+</html>

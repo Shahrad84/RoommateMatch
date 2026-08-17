@@ -48,7 +48,8 @@ INSTALLED_APPS = [
     # sub apps
     "locations",
     "accounts",
-    "profiles"
+    "profiles",
+    "matching",
 ]
 
 MIDDLEWARE = [
