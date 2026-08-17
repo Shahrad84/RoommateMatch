@@ -6,10 +6,11 @@ import random
 import requests
 import json
 from django.conf import settings
+import os
 
 
 URL = "https://openrouter.ai/api/v1/chat/completions"
-API_KEY = "REDACTED"
+OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY")
 MODEL = "nvidia/nemotron-nano-9b-v2:free"
 
 
