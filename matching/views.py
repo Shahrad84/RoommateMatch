@@ -7,6 +7,7 @@ import requests
 import json
 from django.conf import settings
 import os
+from matching.tasks import analyze_matches_task
 
 
 URL = "https://openrouter.ai/api/v1/chat/completions"
@@ -115,35 +116,21 @@ def explore(request):
     # ========================================
     
     if accepted:
-        target_accounts = [c['account'] for c in accepted]
-        ai_results = analyse_with_ai(user, target_accounts)
+        target_ids = [c['account'].id for c in accepted]
         
-        # Add AI analysis to accepted candidates
+        # Send to Celery for parallel AI analysis
+        task = analyze_matches_task.delay(user.id, target_ids)
+        
+        # Wait for results (or use polling later)
+        ai_results = task.get(timeout=120)
+        
+        # Add AI results to candidates
         for candidate in accepted:
             candidate_id = candidate['account'].id
             for ai_result in ai_results:
                 if ai_result.get('user_id') == candidate_id:
                     candidate['analysis'] = ai_result
                     break
-        
-        # Print AI results to terminal
-        print("\n" + "="*60)
-        print(f"🤖 AI ANALYSIS RESULTS")
-        print("="*60)
-        
-        for ai_result in ai_results:
-            print(f"\n👤 User ID: {ai_result.get('user_id')}")
-            print(f"   Score: {ai_result.get('compatibility_score')}/100")
-            print(f"   Summary: {ai_result.get('summary')}")
-            print(f"   ✅ Positive Points:")
-            for point in ai_result.get('positive_points', []):
-                print(f"      - {point}")
-            print(f"   ⚠️ Concerns:")
-            for concern in ai_result.get('concerns', []):
-                print(f"      - {concern}")
-            print("-"*60)
-        
-        print("="*60 + "\n")
     
     return render(request, 'templates/explore.html', {
         'candidates': accepted,
